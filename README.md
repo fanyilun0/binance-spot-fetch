@@ -47,6 +47,20 @@ Every run checks the following and records results in `_run.json` (`issues` / `e
 
 The workflow commits the data first and then fails the job if any issue or error was found, so problems are visible in the Actions tab.
 
+## Provenance (how to verify every number)
+
+Every spot / futures entry has a `provenance` object; `_run.json` has `spot_symbol_discovery` and `futures_symbol_discovery`. All data comes from APIs or official files (no web scraping, so no DOM paths).
+
+- REST API (`type: "rest_api"`): `method`, `endpoint`, `params`, exact `request_url`, `retrieved_at_utc`, official `docs`, `field_map` (JSON path in the response for each field, e.g. `close` = `$[0][4]`) and a `verify` curl command.
+- Official archive file (`type: "official_archive_file"`): zip `url`, `checksum_url`, verified `sha256`, `file_in_zip`, `csv_line`, `field_map` (CSV column per field), `timestamp_unit`, and a `verify` command that downloads the zip, prints the published checksum and the local SHA256, and prints the exact CSV line.
+- Spot entries also carry `validation.archive_provenance`: the archive file the API value was cross-checked against.
+
+Example check of a spot close price:
+
+```
+jq -r '.spot[0].provenance.verify' data/<date>/<HHMM>/HYPE.json | sh   # then compare $[0][4] with .spot[0].daily_kline.close
+```
+
 ## Run locally
 
 ```
