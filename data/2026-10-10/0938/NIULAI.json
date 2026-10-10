@@ -1,0 +1,145 @@
+{
+  "token": "NIULAI",
+  "base_asset": "牛来",
+  "run_at_utc": "2026-10-10T09:38:08Z",
+  "spot": [
+    {
+      "symbol": "牛来USDT",
+      "source": "https://data-api.binance.vision",
+      "ticker_24h": {
+        "lastPrice": "0.07515000",
+        "bidPrice": "0.07511000",
+        "askPrice": "0.07515000",
+        "openPrice": "0.07307000",
+        "highPrice": "0.07638000",
+        "lowPrice": "0.07282000",
+        "weightedAvgPrice": "0.07444321",
+        "priceChange": "0.00208000",
+        "priceChangePercent": "2.847",
+        "volume": "45935649.00000000",
+        "quoteVolume": "3419596.97788000",
+        "count": 34516,
+        "openTime_utc": "2026-10-09T09:38:09.484000Z",
+        "closeTime_utc": "2026-10-10T09:38:09.484000Z"
+      },
+      "today_partial_1d": {
+        "open_time": 1791590400000,
+        "open": "0.07479000",
+        "high": "0.07599000",
+        "low": "0.07282000",
+        "close": "0.07515000",
+        "volume": "23590120.00000000",
+        "close_time": 1791676799999,
+        "quote_volume": "1757293.88049000",
+        "trades": 16672,
+        "taker_buy_volume": "12206957.00000000",
+        "taker_buy_quote_volume": "908875.30384000",
+        "open_time_utc": "2026-10-10T00:00:00Z",
+        "close_time_utc": "2026-10-10T23:59:59.999000Z",
+        "is_final": false
+      },
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "0.07308000",
+        "high": "0.07722000",
+        "low": "0.07244000",
+        "close": "0.07483000",
+        "volume": "49550341.00000000",
+        "close_time": 1791590399999,
+        "quote_volume": "3695267.44434000",
+        "trades": 32142,
+        "taker_buy_volume": "24839531.00000000",
+        "taker_buy_quote_volume": "1852269.15638000",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "is_final": true
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_url": "https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-10-09.zip"
+      }
+    },
+    {
+      "symbol": "牛来USDC",
+      "source": "https://data-api.binance.vision",
+      "ticker_24h": {
+        "lastPrice": "0.07501000",
+        "bidPrice": "0.07502000",
+        "askPrice": "0.07524000",
+        "openPrice": "0.07288000",
+        "highPrice": "0.07712000",
+        "lowPrice": "0.07223000",
+        "weightedAvgPrice": "0.07444804",
+        "priceChange": "0.00213000",
+        "priceChangePercent": "2.923",
+        "volume": "904126.00000000",
+        "quoteVolume": "67310.41088000",
+        "count": 793,
+        "openTime_utc": "2026-10-09T09:38:05.564000Z",
+        "closeTime_utc": "2026-10-10T09:38:05.564000Z"
+      },
+      "today_partial_1d": {
+        "open_time": 1791590400000,
+        "open": "0.07425000",
+        "high": "0.07712000",
+        "low": "0.07294000",
+        "close": "0.07501000",
+        "volume": "356609.00000000",
+        "close_time": 1791676799999,
+        "quote_volume": "26674.31637000",
+        "trades": 227,
+        "taker_buy_volume": "93533.00000000",
+        "taker_buy_quote_volume": "7003.56884000",
+        "open_time_utc": "2026-10-10T00:00:00Z",
+        "close_time_utc": "2026-10-10T23:59:59.999000Z",
+        "is_final": false
+      },
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "0.07403000",
+        "high": "0.07694000",
+        "low": "0.07223000",
+        "close": "0.07405000",
+        "volume": "1354553.00000000",
+        "close_time": 1791590399999,
+        "quote_volume": "100526.38830000",
+        "trades": 956,
+        "taker_buy_volume": "445548.00000000",
+        "taker_buy_quote_volume": "33305.16043000",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "is_final": true
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_url": "https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDC/1d/%E7%89%9B%E6%9D%A5USDC-1d-2026-10-09.zip"
+      }
+    }
+  ],
+  "futures": [
+    {
+      "symbol": "牛来USDT",
+      "mode": "archive",
+      "source": "https://data.binance.vision",
+      "note": "fapi.binance.com unreachable from runner; using finalized daily kline from data.binance.vision",
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "0.0730800",
+        "high": "0.0772500",
+        "low": "0.0723900",
+        "close": "0.0747500",
+        "volume": "234546963",
+        "close_time": 1791590399999,
+        "quote_volume": "17472240.0463200",
+        "trades": 254112,
+        "taker_buy_volume": "115559044",
+        "taker_buy_quote_volume": "8610713.5620800",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "source_url": "https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-10-09.zip",
+        "is_final": true
+      }
+    }
+  ],
+  "status": "ok"
+}

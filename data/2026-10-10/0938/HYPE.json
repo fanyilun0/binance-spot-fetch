@@ -1,0 +1,145 @@
+{
+  "token": "HYPE",
+  "base_asset": "HYPE",
+  "run_at_utc": "2026-10-10T09:38:08Z",
+  "spot": [
+    {
+      "symbol": "HYPEUSDC",
+      "source": "https://data-api.binance.vision",
+      "ticker_24h": {
+        "lastPrice": "84.30000000",
+        "bidPrice": "84.30000000",
+        "askPrice": "84.31000000",
+        "openPrice": "85.92000000",
+        "highPrice": "86.54000000",
+        "lowPrice": "83.36000000",
+        "weightedAvgPrice": "84.78948026",
+        "priceChange": "-1.62000000",
+        "priceChangePercent": "-1.885",
+        "volume": "93386.17100000",
+        "quoteVolume": "7918164.90270000",
+        "count": 16048,
+        "openTime_utc": "2026-10-09T09:37:42.631000Z",
+        "closeTime_utc": "2026-10-10T09:37:42.631000Z"
+      },
+      "today_partial_1d": {
+        "open_time": 1791590400000,
+        "open": "84.12000000",
+        "high": "84.57000000",
+        "low": "83.71000000",
+        "close": "84.30000000",
+        "volume": "32418.05900000",
+        "close_time": 1791676799999,
+        "quote_volume": "2732403.34427000",
+        "trades": 8566,
+        "taker_buy_volume": "7317.58100000",
+        "taker_buy_quote_volume": "616442.27485000",
+        "open_time_utc": "2026-10-10T00:00:00Z",
+        "close_time_utc": "2026-10-10T23:59:59.999000Z",
+        "is_final": false
+      },
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "84.17000000",
+        "high": "86.54000000",
+        "low": "83.36000000",
+        "close": "84.16000000",
+        "volume": "93206.23300000",
+        "close_time": 1791590399999,
+        "quote_volume": "7930392.85821000",
+        "trades": 11217,
+        "taker_buy_volume": "43846.22900000",
+        "taker_buy_quote_volume": "3728254.92023000",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "is_final": true
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-10-09.zip"
+      }
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "source": "https://data-api.binance.vision",
+      "ticker_24h": {
+        "lastPrice": "84.38000000",
+        "bidPrice": "84.37000000",
+        "askPrice": "84.38000000",
+        "openPrice": "85.97000000",
+        "highPrice": "86.62000000",
+        "lowPrice": "83.40000000",
+        "weightedAvgPrice": "85.00366625",
+        "priceChange": "-1.59000000",
+        "priceChangePercent": "-1.849",
+        "volume": "227729.44700000",
+        "quoteVolume": "19357837.90777000",
+        "count": 47053,
+        "openTime_utc": "2026-10-09T09:38:00.679000Z",
+        "closeTime_utc": "2026-10-10T09:38:00.679000Z"
+      },
+      "today_partial_1d": {
+        "open_time": 1791590400000,
+        "open": "84.22000000",
+        "high": "84.62000000",
+        "low": "83.78000000",
+        "close": "84.38000000",
+        "volume": "52834.91100000",
+        "close_time": 1791676799999,
+        "quote_volume": "4451831.87345000",
+        "trades": 7724,
+        "taker_buy_volume": "27583.28000000",
+        "taker_buy_quote_volume": "2324823.33077000",
+        "open_time_utc": "2026-10-10T00:00:00Z",
+        "close_time_utc": "2026-10-10T23:59:59.999000Z",
+        "is_final": false
+      },
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "84.23000000",
+        "high": "86.62000000",
+        "low": "83.40000000",
+        "close": "84.22000000",
+        "volume": "268126.30800000",
+        "close_time": 1791590399999,
+        "quote_volume": "22861797.70121000",
+        "trades": 57575,
+        "taker_buy_volume": "104122.57500000",
+        "taker_buy_quote_volume": "8865873.69679000",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "is_final": true
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-10-09.zip"
+      }
+    }
+  ],
+  "futures": [
+    {
+      "symbol": "HYPEUSDT",
+      "mode": "archive",
+      "source": "https://data.binance.vision",
+      "note": "fapi.binance.com unreachable from runner; using finalized daily kline from data.binance.vision",
+      "previous_day_final_1d": {
+        "open_time": 1791504000000,
+        "open": "84.18900",
+        "high": "86.58800",
+        "low": "83.37500",
+        "close": "84.17100",
+        "volume": "4731326.25",
+        "close_time": 1791590399999,
+        "quote_volume": "402573401.0350200",
+        "trades": 1196591,
+        "taker_buy_volume": "2215710.02",
+        "taker_buy_quote_volume": "188593742.8401100",
+        "open_time_utc": "2026-10-09T00:00:00Z",
+        "close_time_utc": "2026-10-09T23:59:59.999000Z",
+        "source_url": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-10-09.zip",
+        "is_final": true
+      }
+    }
+  ],
+  "status": "ok"
+}
