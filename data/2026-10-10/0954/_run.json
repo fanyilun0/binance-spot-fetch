@@ -1,9 +1,8 @@
 {
-  "run_at_utc": "2026-10-10T09:38:08Z",
-  "today_utc": "2026-10-10",
-  "previous_day_utc": "2026-10-09",
+  "fetched_at_utc": "2026-10-10T09:54:45Z",
+  "trade_date_utc": "2026-10-09",
   "spot_source": "https://data-api.binance.vision",
-  "futures_source": "archive (unavailable (HTTP 451))",
+  "futures_source": "https://data.binance.vision",
   "tokens": {
     "MARSCOIN": {
       "status": "ok",

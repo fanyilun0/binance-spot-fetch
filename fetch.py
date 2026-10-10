@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
-"""Collect Binance Spot / USD-M Futures market data for configured tokens and save as JSON.
+"""Collect official Binance daily (UTC) klines for configured tokens and save as JSON.
 
-Output layout: data/<UTC date>/<UTC HHMM>/<TOKEN>.json plus data/<UTC date>/<UTC HHMM>/_run.json.
+For each token, the finalized 1d kline of the trade date (default: previous UTC day) is collected for
+every Spot pair and USD-M perpetual. Sources are official Binance endpoints only:
 
-Daily candles are always fetched by exchange UTC day boundaries, so the finalized
-previous-day record is correct even if the scheduled job starts late.
+- Spot: market-data REST API (data-api.binance.vision), cross-checked against the official archive
+- Futures: official archive data.binance.vision (fapi.binance.com is geo-blocked for US IPs)
+
+Every archive file is verified against its published SHA256 .CHECKSUM.
+
+Output layout: data/<fetch UTC date>/<fetch UTC HHMM>/<TOKEN>.json plus _run.json.
 """
+
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import io
 import json
-import os
 import sys
 import time
 import urllib.error
@@ -23,25 +29,17 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DAY_MS = 86_400_000
 
-SPOT_BASES = [
-    b for b in os.environ.get(
-        "BINANCE_SPOT_BASES",
-        "https://data-api.binance.vision,https://api.binance.com,https://api1.binance.com",
-    ).split(",") if b
-]
-FUTURES_BASES = [
-    b for b in os.environ.get("BINANCE_FUTURES_BASES", "https://fapi.binance.com").split(",") if b
-]
-ARCHIVE_BASE = os.environ.get("BINANCE_ARCHIVE_BASE", "https://data.binance.vision")
+SPOT_BASES = ["https://data-api.binance.vision", "https://api.binance.com"]
+ARCHIVE_BASE = "https://data.binance.vision"
+ARCHIVE_PREFIX = {"spot": "data/spot", "futures": "data/futures/um"}
+FUTURES_SPOT_MAX_DIFF = 0.05
 
 KLINE_FIELDS = [
     "open_time", "open", "high", "low", "close", "volume", "close_time",
     "quote_volume", "trades", "taker_buy_volume", "taker_buy_quote_volume",
 ]
-NUMERIC_FIELDS = {"open", "high", "low", "close", "volume", "quote_volume",
-                  "taker_buy_volume", "taker_buy_quote_volume"}
+NUMERIC_FIELDS = ["open", "high", "low", "close", "volume", "quote_volume", "taker_buy_volume", "taker_buy_quote_volume"]
 
 
 class HttpError(Exception):
@@ -50,23 +48,26 @@ class HttpError(Exception):
         self.status = status
 
 
-def http_get(url: str, params: dict | None = None, retries: int = 3, timeout: int = 20) -> bytes:
+class ValidationError(Exception):
+    pass
+
+
+def http_get(url: str, params: dict | None = None, retries: int = 3, timeout: int = 30) -> bytes:
     if params:
         url = f"{url}?{urllib.parse.urlencode(params)}"
-    last: Exception | None = None
+    last: HttpError | None = None
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "binance-spot-fetch/1.0"})
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return resp.read()
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", "replace")
-            last = HttpError(url, e.code, body)
+            last = HttpError(url, e.code, e.read().decode("utf-8", "replace"))
             if e.code in (400, 403, 404, 451):
                 raise last
         except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
             last = HttpError(url, None, str(e))
-        time.sleep(1.5 * (attempt + 1))
+        time.sleep(2 * (attempt + 1))
     raise last  # type: ignore[misc]
 
 
@@ -90,7 +91,7 @@ def ms_to_iso(ms: int) -> str:
 
 
 def parse_kline(row: list) -> dict:
-    k = {}
+    k: dict = {}
     for i, name in enumerate(KLINE_FIELDS):
         v = row[i]
         if name in ("open_time", "close_time"):
@@ -107,183 +108,138 @@ def parse_kline(row: list) -> dict:
     return k
 
 
-def api_daily_kline(bases: list[str], path: str, symbol: str, d: date):
-    data, base = get_json(bases, path, {
-        "symbol": symbol, "interval": "1d", "startTime": utc_day_start_ms(d), "limit": 1,
-    })
-    if not data or int(data[0][0]) != utc_day_start_ms(d):
-        return None, base
-    return parse_kline(data[0]), base
+def check_kline(k: dict, d: date) -> list[str]:
+    issues = []
+    if k["open_time"] != utc_day_start_ms(d) or k["close_time"] != utc_day_start_ms(d + timedelta(days=1)) - 1:
+        issues.append(f"kline does not cover UTC day {d}")
+    o, h, l, c = (float(k[f]) for f in ("open", "high", "low", "close"))
+    vol, qv = float(k["volume"]), float(k["quote_volume"])
+    if min(o, h, l, c) <= 0:
+        issues.append("non-positive price")
+    if not (l <= min(o, c) and max(o, c) <= h):
+        issues.append(f"OHLC inconsistent (o={o} h={h} l={l} c={c})")
+    if vol < 0 or qv < 0:
+        issues.append("negative volume")
+    if vol > 0 and not (l * 0.999 <= qv / vol <= h * 1.001):
+        issues.append(f"quote_volume/volume={qv / vol} outside [low, high]")
+    return issues
+
+
+def kline_diffs(a: dict, b: dict) -> list[str]:
+    diffs = [f for f in ("open_time", "close_time", "trades") if a[f] != b[f]]
+    diffs += [f for f in NUMERIC_FIELDS if abs(float(a[f]) - float(b[f])) > 1e-9 * max(1.0, abs(float(a[f])))]
+    return sorted(diffs)
+
+
+def archive_url(market: str, symbol: str, d: date) -> str:
+    name = urllib.parse.quote(f"{symbol}-1d-{d.isoformat()}.zip")
+    return f"{ARCHIVE_BASE}/{ARCHIVE_PREFIX[market]}/daily/klines/{urllib.parse.quote(symbol)}/1d/{name}"
 
 
 def archive_daily_kline(market: str, symbol: str, d: date) -> dict | None:
-    prefix = {"spot": "data/spot", "futures": "data/futures/um"}[market]
-    name = f"{symbol}-1d-{d.isoformat()}"
-    url = f"{ARCHIVE_BASE}/{prefix}/daily/klines/{urllib.parse.quote(symbol)}/1d/{urllib.parse.quote(name)}.zip"
+    """Official archived 1d kline, SHA256-verified. None if the file does not exist."""
+    url = archive_url(market, symbol, d)
     try:
         raw = http_get(url)
     except HttpError as e:
         if e.status == 404:
             return None
         raise
+    expected = http_get(url + ".CHECKSUM").decode().split()[0].lower()
+    actual = hashlib.sha256(raw).hexdigest()
+    if actual != expected:
+        raise ValidationError(f"SHA256 mismatch for {url}: {actual} != {expected}")
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
         text = z.read(z.namelist()[0]).decode("utf-8")
     rows = [r for r in csv.reader(io.StringIO(text)) if r and r[0].strip().isdigit()]
-    if not rows:
-        return None
+    if len(rows) != 1:
+        raise ValidationError(f"expected 1 row in {url}, got {len(rows)}")
     k = parse_kline(rows[0])
-    k["source_url"] = url
-    return k
-
-
-def check_kline(k: dict, label: str) -> list[str]:
-    issues = []
-    o, h, l, c = (float(k[f]) for f in ("open", "high", "low", "close"))
-    vol, qv = float(k["volume"]), float(k["quote_volume"])
-    if min(o, h, l, c) <= 0:
-        issues.append(f"{label}: non-positive price")
-    if not (l <= min(o, c) and max(o, c) <= h):
-        issues.append(f"{label}: OHLC inconsistent (o={o} h={h} l={l} c={c})")
-    if vol < 0 or qv < 0:
-        issues.append(f"{label}: negative volume")
-    if vol > 0 and not (l * 0.999 <= qv / vol <= h * 1.001):
-        issues.append(f"{label}: quote_volume/volume={qv / vol} outside [low, high]")
-    return issues
-
-
-def same_kline(a: dict, b: dict) -> list[str]:
-    diffs = []
-    for f in ("open_time", "trades"):
-        if a[f] != b[f]:
-            diffs.append(f)
-    for f in NUMERIC_FIELDS:
-        if abs(float(a[f]) - float(b[f])) > 1e-9 * max(1.0, abs(float(a[f]))):
-            diffs.append(f)
-    return sorted(diffs)
+    return {"kline": k, "url": url, "sha256": actual}
 
 
 def discover_spot_symbols(tokens: list[dict], quotes: list[str]) -> tuple[dict, str]:
     info, base = get_json(SPOT_BASES, "/api/v3/exchangeInfo", {"permissions": "SPOT"})
-    found: dict[str, list[dict]] = {t["name"]: [] for t in tokens}
+    found: dict[str, list[str]] = {t["name"]: [] for t in tokens}
     by_base = {t["base_asset"]: t["name"] for t in tokens}
     for s in info["symbols"]:
         name = by_base.get(s["baseAsset"])
-        if name and s["quoteAsset"] in quotes:
-            found[name].append({"symbol": s["symbol"], "quote": s["quoteAsset"], "status": s["status"]})
+        if name and s["quoteAsset"] in quotes and s["status"] == "TRADING":
+            found[name].append(s["symbol"])
     return found, base
 
 
-def discover_futures_symbols(tokens: list[dict], quotes: list[str]) -> tuple[dict, str]:
-    found: dict[str, list[dict]] = {t["name"]: [] for t in tokens}
-    try:
-        info, base = get_json(FUTURES_BASES, "/fapi/v1/exchangeInfo")
-    except HttpError as e:
-        return {}, f"unavailable (HTTP {e.status})" if e.status else "unavailable"
-    by_base = {t["base_asset"]: t["name"] for t in tokens}
-    for s in info["symbols"]:
-        name = by_base.get(s["baseAsset"])
-        if name and s["quoteAsset"] in quotes and s.get("contractType") == "PERPETUAL":
-            found[name].append({"symbol": s["symbol"], "quote": s["quoteAsset"], "status": s["status"]})
-    return found, base
-
-
-def collect_spot(symbol: str, today: date, prev: date) -> tuple[dict, list[str]]:
-    out: dict = {"symbol": symbol}
-    issues: list[str] = []
-    ticker, base = get_json(SPOT_BASES, "/api/v3/ticker/24hr", {"symbol": symbol})
-    out["source"] = base
-    out["ticker_24h"] = {k: ticker[k] for k in (
-        "lastPrice", "bidPrice", "askPrice", "openPrice", "highPrice", "lowPrice",
-        "weightedAvgPrice", "priceChange", "priceChangePercent", "volume", "quoteVolume", "count",
-    )}
-    out["ticker_24h"]["openTime_utc"] = ms_to_iso(ticker["openTime"])
-    out["ticker_24h"]["closeTime_utc"] = ms_to_iso(ticker["closeTime"])
-
-    today_k, _ = api_daily_kline(SPOT_BASES, "/api/v3/klines", symbol, today)
-    if today_k:
-        today_k["is_final"] = False
-        issues += check_kline(today_k, f"spot {symbol} {today} partial")
-        if today_k["close"] and abs(float(today_k["close"]) / float(ticker["lastPrice"]) - 1) > 0.02:
-            issues.append(f"spot {symbol}: today close {today_k['close']} vs ticker last {ticker['lastPrice']} differ >2%")
-    out["today_partial_1d"] = today_k
-
-    prev_k, _ = api_daily_kline(SPOT_BASES, "/api/v3/klines", symbol, prev)
+def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
+    data, base = get_json(SPOT_BASES, "/api/v3/klines", {
+        "symbol": symbol, "interval": "1d", "startTime": utc_day_start_ms(d), "limit": 1,
+    })
+    if not data or int(data[0][0]) != utc_day_start_ms(d):
+        raise ValidationError(f"spot {symbol}: API returned no 1d kline for {d}")
+    k = parse_kline(data[0])
+    issues = [f"spot {symbol} {d}: {i}" for i in check_kline(k, d)]
+    archived = archive_daily_kline("spot", symbol, d)
     validation: dict = {}
-    if prev_k:
-        prev_k["is_final"] = True
-        issues += check_kline(prev_k, f"spot {symbol} {prev} final")
-        archived = archive_daily_kline("spot", symbol, prev)
-        if archived is None:
-            validation["archive_cross_check"] = "archive not published yet"
-        else:
-            diffs = same_kline(prev_k, archived)
-            validation["archive_cross_check"] = "match" if not diffs else f"mismatch: {diffs}"
-            validation["archive_url"] = archived["source_url"]
-            if diffs:
-                issues.append(f"spot {symbol} {prev}: API vs archive mismatch {diffs}")
-    out["previous_day_final_1d"] = prev_k
-    out["validation"] = validation
-    return out, issues
-
-
-def collect_futures_live(symbol: str, today: date, prev: date) -> tuple[dict, list[str]]:
-    out: dict = {"symbol": symbol, "mode": "live"}
-    issues: list[str] = []
-    ticker, base = get_json(FUTURES_BASES, "/fapi/v1/ticker/24hr", {"symbol": symbol})
-    premium, _ = get_json(FUTURES_BASES, "/fapi/v1/premiumIndex", {"symbol": symbol})
-    oi, _ = get_json(FUTURES_BASES, "/fapi/v1/openInterest", {"symbol": symbol})
-    out["source"] = base
-    out["ticker_24h"] = {k: ticker[k] for k in (
-        "lastPrice", "openPrice", "highPrice", "lowPrice", "weightedAvgPrice",
-        "priceChange", "priceChangePercent", "volume", "quoteVolume", "count",
-    )}
-    out["mark_price"] = premium.get("markPrice")
-    out["index_price"] = premium.get("indexPrice")
-    out["last_funding_rate"] = premium.get("lastFundingRate")
-    out["open_interest"] = oi.get("openInterest")
-    today_k, _ = api_daily_kline(FUTURES_BASES, "/fapi/v1/klines", symbol, today)
-    prev_k, _ = api_daily_kline(FUTURES_BASES, "/fapi/v1/klines", symbol, prev)
-    for k, final, d in ((today_k, False, today), (prev_k, True, prev)):
-        if k:
-            k["is_final"] = final
-            issues += check_kline(k, f"futures {symbol} {d}")
-    out["today_partial_1d"] = today_k
-    out["previous_day_final_1d"] = prev_k
-    return out, issues
-
-
-def collect_futures_archive(symbol: str, prev: date) -> tuple[dict | None, list[str]]:
-    """Fallback when fapi.binance.com is geo-blocked: finalized daily candle from data.binance.vision."""
-    k = archive_daily_kline("futures", symbol, prev)
-    if k is None:
-        return None, []
-    k["is_final"] = True
+    if archived is None:
+        validation["archive_cross_check"] = "archive not published"
+        issues.append(f"spot {symbol} {d}: official archive not published yet, cross-check skipped")
+    else:
+        diffs = kline_diffs(k, archived["kline"])
+        validation.update({
+            "archive_cross_check": "match" if not diffs else f"mismatch: {diffs}",
+            "archive_url": archived["url"],
+            "archive_sha256_verified": archived["sha256"],
+        })
+        if diffs:
+            issues.append(f"spot {symbol} {d}: API vs official archive mismatch {diffs}")
     return {
-        "symbol": symbol,
-        "mode": "archive",
-        "source": ARCHIVE_BASE,
-        "note": "fapi.binance.com unreachable from runner; using finalized daily kline from data.binance.vision",
-        "previous_day_final_1d": k,
-    }, check_kline(k, f"futures {symbol} {prev} archive")
+        "symbol": symbol, "market": "spot", "source": f"{base}/api/v3/klines",
+        "daily_kline": k, "validation": validation,
+    }, issues
 
 
-def run(now: datetime, out_root: Path, config: dict) -> tuple[dict, int]:
+def collect_futures(base_asset: str, quotes: list[str], d: date) -> tuple[list[dict], list[str]]:
+    out, issues = [], []
+    for symbol in (base_asset + q for q in quotes):
+        archived = archive_daily_kline("futures", symbol, d)
+        if archived is None:
+            # Listed symbol whose file for `d` is missing but the day before exists -> not published yet.
+            if archive_daily_kline("futures", symbol, d - timedelta(days=1)) is not None:
+                issues.append(f"futures {symbol} {d}: official archive not published yet")
+            continue
+        k = archived["kline"]
+        issues += [f"futures {symbol} {d}: {i}" for i in check_kline(k, d)]
+        out.append({
+            "symbol": symbol, "market": "usdm_perpetual", "source": archived["url"],
+            "daily_kline": k, "validation": {"archive_sha256_verified": archived["sha256"]},
+        })
+    return out, issues
+
+
+def cross_market_check(record: dict) -> list[str]:
+    spot = {s["symbol"]: float(s["daily_kline"]["close"]) for s in record["spot"]}
+    issues = []
+    for f in record["futures"]:
+        s_close = spot.get(f["symbol"])
+        if s_close:
+            diff = abs(float(f["daily_kline"]["close"]) / s_close - 1)
+            f["validation"]["spot_close_diff_pct"] = round(diff * 100, 4)
+            if diff > FUTURES_SPOT_MAX_DIFF:
+                issues.append(f"{f['symbol']}: futures close differs from spot close by {diff:.2%}")
+    return issues
+
+
+def run(now: datetime, trade_date: date, out_root: Path, config: dict) -> tuple[dict, int]:
     tokens, quotes = config["tokens"], config["quote_assets"]
-    today = now.date()
-    prev = today - timedelta(days=1)
-    run_dir = out_root / today.isoformat() / now.strftime("%H%M")
+    run_dir = out_root / now.date().isoformat() / now.strftime("%H%M")
     run_dir.mkdir(parents=True, exist_ok=True)
+    fetched_at = now.isoformat().replace("+00:00", "Z")
 
     spot_syms, spot_base = discover_spot_symbols(tokens, quotes)
-    fut_syms, fut_base = discover_futures_symbols(tokens, quotes)
-    futures_live = bool(fut_syms)
-
     summary: dict = {
-        "run_at_utc": now.isoformat().replace("+00:00", "Z"),
-        "today_utc": today.isoformat(),
-        "previous_day_utc": prev.isoformat(),
+        "fetched_at_utc": fetched_at,
+        "trade_date_utc": trade_date.isoformat(),
         "spot_source": spot_base,
-        "futures_source": fut_base if futures_live else f"archive ({fut_base})",
+        "futures_source": ARCHIVE_BASE,
         "tokens": {},
         "issues": [],
         "errors": [],
@@ -292,37 +248,25 @@ def run(now: datetime, out_root: Path, config: dict) -> tuple[dict, int]:
     for t in tokens:
         name = t["name"]
         record: dict = {
-            "token": name, "base_asset": t["base_asset"],
-            "run_at_utc": summary["run_at_utc"], "spot": [], "futures": [],
+            "token": name, "base_asset": t["base_asset"], "trade_date_utc": trade_date.isoformat(),
+            "fetched_at_utc": fetched_at, "spot": [], "futures": [],
         }
-        for s in spot_syms.get(name, []):
-            if s["status"] != "TRADING":
-                continue
+        for symbol in spot_syms.get(name, []):
             try:
-                data, issues = collect_spot(s["symbol"], today, prev)
+                data, issues = collect_spot(symbol, trade_date)
                 record["spot"].append(data)
                 summary["issues"] += issues
-            except HttpError as e:
-                summary["errors"].append(f"spot {s['symbol']}: {e}")
+            except (HttpError, ValidationError) as e:
+                summary["errors"].append(f"spot {symbol}: {e}")
+        try:
+            futures, issues = collect_futures(t["base_asset"], quotes, trade_date)
+            record["futures"] = futures
+            summary["issues"] += issues
+        except (HttpError, ValidationError) as e:
+            summary["errors"].append(f"futures {t['base_asset']}: {e}")
+        summary["issues"] += cross_market_check(record)
 
-        if futures_live:
-            candidates = [s["symbol"] for s in fut_syms.get(name, []) if s["status"] == "TRADING"]
-        else:
-            candidates = [t["base_asset"] + q for q in quotes]
-        for sym in candidates:
-            try:
-                if futures_live:
-                    data, issues = collect_futures_live(sym, today, prev)
-                else:
-                    data, issues = collect_futures_archive(sym, prev)
-                if data:
-                    record["futures"].append(data)
-                    summary["issues"] += issues
-            except HttpError as e:
-                summary["errors"].append(f"futures {sym}: {e}")
-
-        listed = bool(record["spot"] or record["futures"])
-        record["status"] = "ok" if listed else "not_listed_on_binance"
+        record["status"] = "ok" if record["spot"] or record["futures"] else "not_listed_on_binance"
         (run_dir / f"{name}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         summary["tokens"][name] = {
             "status": record["status"],
@@ -331,18 +275,22 @@ def run(now: datetime, out_root: Path, config: dict) -> tuple[dict, int]:
         }
 
     (run_dir / "_run.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    ok_tokens = [n for n, v in summary["tokens"].items() if v["status"] == "ok"]
-    exit_code = 0 if ok_tokens and not summary["errors"] and not summary["issues"] else 1
-    return summary, exit_code
+    ok = any(v["status"] == "ok" for v in summary["tokens"].values())
+    return summary, 0 if ok and not summary["errors"] and not summary["issues"] else 1
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description=__doc__)
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", default=str(ROOT / "data"), help="output root directory")
     p.add_argument("--config", default=str(ROOT / "config.json"))
+    p.add_argument("--date", type=date.fromisoformat, help="UTC trade date YYYY-MM-DD (default: previous UTC day)")
     args = p.parse_args()
     config = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    summary, code = run(datetime.now(timezone.utc).replace(microsecond=0), Path(args.out), config)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    trade_date = args.date or (now.date() - timedelta(days=1))
+    if trade_date >= now.date():
+        p.error("--date must be a completed UTC day (before today)")
+    summary, code = run(now, trade_date, Path(args.out), config)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return code
 
