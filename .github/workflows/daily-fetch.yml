@@ -1,0 +1,64 @@
+name: Daily Binance fetch
+
+on:
+  schedule:
+    - cron: "55 23 * * *"  # UTC; GitHub may start scheduled runs late
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: binance-fetch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Fetch and validate
+        id: fetch
+        run: |
+          set +e
+          if [ "${{ github.event_name }}" = "pull_request" ]; then OUT="$RUNNER_TEMP/data"; else OUT=data; fi
+          python fetch.py --out "$OUT"
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          echo "out=$OUT" >> "$GITHUB_OUTPUT"
+
+      - name: Upload result (PR dry run)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: fetch-result
+          path: ${{ steps.fetch.outputs.out }}
+
+      - name: Commit data
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "no new data"; exit 0; fi
+          git commit -m "data: binance snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1
+
+      - name: Fail on validation errors
+        if: steps.fetch.outputs.code != '0'
+        run: |
+          echo "fetch.py exited with ${{ steps.fetch.outputs.code }}; see _run.json issues/errors"
+          exit 1

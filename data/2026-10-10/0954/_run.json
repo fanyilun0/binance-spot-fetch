@@ -1,0 +1,45 @@
+{
+  "fetched_at_utc": "2026-10-10T09:54:45Z",
+  "trade_date_utc": "2026-10-09",
+  "spot_source": "https://data-api.binance.vision",
+  "futures_source": "https://data.binance.vision",
+  "tokens": {
+    "MARSCOIN": {
+      "status": "ok",
+      "spot_symbols": [
+        "MARSCOINUSDT",
+        "MARSCOINUSDC"
+      ],
+      "futures_symbols": [
+        "MARSCOINUSDT"
+      ]
+    },
+    "NIULAI": {
+      "status": "ok",
+      "spot_symbols": [
+        "牛来USDT",
+        "牛来USDC"
+      ],
+      "futures_symbols": [
+        "牛来USDT"
+      ]
+    },
+    "HYPE": {
+      "status": "ok",
+      "spot_symbols": [
+        "HYPEUSDC",
+        "HYPEUSDT"
+      ],
+      "futures_symbols": [
+        "HYPEUSDT"
+      ]
+    },
+    "POINS": {
+      "status": "not_listed_on_binance",
+      "spot_symbols": [],
+      "futures_symbols": []
+    }
+  },
+  "issues": [],
+  "errors": []
+}
