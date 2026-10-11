@@ -34,6 +34,9 @@ SPOT_BASES = ["https://data-api.binance.vision", "https://api.binance.com"]
 ARCHIVE_BASE = "https://data.binance.vision"
 ARCHIVE_PREFIX = {"spot": "data/spot", "futures": "data/futures/um"}
 FUTURES_SPOT_MAX_DIFF = 0.05
+SPOT_KLINES_DOCS = "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data"
+SPOT_EXCHANGE_INFO_DOCS = "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#exchange-information"
+ARCHIVE_DOCS = "https://github.com/binance/binance-public-data"
 
 KLINE_FIELDS = [
     "open_time", "open", "high", "low", "close", "volume", "close_time",
@@ -72,11 +75,12 @@ def http_get(url: str, params: dict | None = None, retries: int = 3, timeout: in
 
 
 def get_json(bases: list[str], path: str, params: dict | None = None):
-    """Try each base URL in order; return (data, base_used)."""
+    """Try each base URL in order; return (data, base_used, full_request_url)."""
     errors: list[HttpError] = []
     for base in bases:
+        url = base + path + (f"?{urllib.parse.urlencode(params)}" if params else "")
         try:
-            return json.loads(http_get(base + path, params)), base
+            return json.loads(http_get(url)), base, url
         except HttpError as e:
             errors.append(e)
     raise HttpError(path, errors[-1].status if errors else None, " | ".join(map(str, errors)))
@@ -84,6 +88,10 @@ def get_json(bases: list[str], path: str, params: dict | None = None):
 
 def utc_day_start_ms(d: date) -> int:
     return int(datetime(d.year, d.month, d.day, tzinfo=timezone.utc).timestamp() * 1000)
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def ms_to_iso(ms: int) -> str:
@@ -136,43 +144,98 @@ def archive_url(market: str, symbol: str, d: date) -> str:
     return f"{ARCHIVE_BASE}/{ARCHIVE_PREFIX[market]}/daily/klines/{urllib.parse.quote(symbol)}/1d/{name}"
 
 
+def api_provenance(endpoint: str, params: dict, request_url: str, retrieved_at: str, docs: str) -> dict:
+    return {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": endpoint,
+        "params": params,
+        "request_url": request_url,
+        "retrieved_at_utc": retrieved_at,
+        "docs": docs,
+        "response_path": "$[0]",
+        "field_map": {f: f"$[0][{i}]" for i, f in enumerate(KLINE_FIELDS)},
+        "verify": f"curl -s '{request_url}'",
+    }
+
+
 def archive_daily_kline(market: str, symbol: str, d: date) -> dict | None:
     """Official archived 1d kline, SHA256-verified. None if the file does not exist."""
     url = archive_url(market, symbol, d)
+    retrieved_at = now_iso()
     try:
         raw = http_get(url)
     except HttpError as e:
         if e.status == 404:
             return None
         raise
-    expected = http_get(url + ".CHECKSUM").decode().split()[0].lower()
+    checksum_url = url + ".CHECKSUM"
+    expected = http_get(checksum_url).decode().split()[0].lower()
     actual = hashlib.sha256(raw).hexdigest()
     if actual != expected:
         raise ValidationError(f"SHA256 mismatch for {url}: {actual} != {expected}")
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
-        text = z.read(z.namelist()[0]).decode("utf-8")
-    rows = [r for r in csv.reader(io.StringIO(text)) if r and r[0].strip().isdigit()]
-    if len(rows) != 1:
-        raise ValidationError(f"expected 1 row in {url}, got {len(rows)}")
-    k = parse_kline(rows[0])
-    return {"kline": k, "url": url, "sha256": actual}
+        member = z.namelist()[0]
+        text = z.read(member).decode("utf-8")
+    lines = list(csv.reader(io.StringIO(text)))
+    data_rows = [(n, r) for n, r in enumerate(lines, start=1) if r and r[0].strip().isdigit()]
+    if len(data_rows) != 1:
+        raise ValidationError(f"expected 1 row in {url}, got {len(data_rows)}")
+    line_no, row = data_rows[0]
+    has_header = bool(lines and lines[0] and not lines[0][0].strip().isdigit())
+    k = parse_kline(row)
+    provenance = {
+        "type": "official_archive_file",
+        "provider": "Binance (data.binance.vision)",
+        "url": url,
+        "checksum_url": checksum_url,
+        "sha256": actual,
+        "sha256_verified": True,
+        "file_in_zip": member,
+        "csv_header": has_header,
+        "csv_line": line_no,
+        "field_map": {f: f"column {i + 1}" for i, f in enumerate(KLINE_FIELDS)},
+        "timestamp_unit": "microseconds" if int(row[0]) > 10**14 else "milliseconds",
+        "retrieved_at_utc": retrieved_at,
+        "docs": ARCHIVE_DOCS,
+        "verify": (
+            f"curl -s '{url}' -o kline.zip && curl -s '{checksum_url}'; echo; sha256sum kline.zip "
+            f"&& unzip -p kline.zip | sed -n '{line_no}p'"
+        ),
+    }
+    return {"kline": k, "url": url, "sha256": actual, "provenance": provenance}
 
 
-def discover_spot_symbols(tokens: list[dict], quotes: list[str]) -> tuple[dict, str]:
-    info, base = get_json(SPOT_BASES, "/api/v3/exchangeInfo", {"permissions": "SPOT"})
+def discover_spot_symbols(tokens: list[dict], quotes: list[str]) -> tuple[dict, dict]:
+    params = {"permissions": "SPOT"}
+    retrieved_at = now_iso()
+    info, base, url = get_json(SPOT_BASES, "/api/v3/exchangeInfo", params)
     found: dict[str, list[str]] = {t["name"]: [] for t in tokens}
     by_base = {t["base_asset"]: t["name"] for t in tokens}
     for s in info["symbols"]:
         name = by_base.get(s["baseAsset"])
         if name and s["quoteAsset"] in quotes and s["status"] == "TRADING":
             found[name].append(s["symbol"])
-    return found, base
+    discovery = {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": f"{base}/api/v3/exchangeInfo",
+        "params": params,
+        "request_url": url,
+        "retrieved_at_utc": retrieved_at,
+        "docs": SPOT_EXCHANGE_INFO_DOCS,
+        "selection": f"$.symbols[?(@.baseAsset in config.tokens[].base_asset && @.quoteAsset in {quotes} && @.status == 'TRADING')]",
+        "verify": f"curl -s '{url}'",
+    }
+    return found, discovery
 
 
 def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
-    data, base = get_json(SPOT_BASES, "/api/v3/klines", {
-        "symbol": symbol, "interval": "1d", "startTime": utc_day_start_ms(d), "limit": 1,
-    })
+    params = {"symbol": symbol, "interval": "1d", "startTime": utc_day_start_ms(d), "limit": 1}
+    retrieved_at = now_iso()
+    data, base, request_url = get_json(SPOT_BASES, "/api/v3/klines", params)
     if not data or int(data[0][0]) != utc_day_start_ms(d):
         raise ValidationError(f"spot {symbol}: API returned no 1d kline for {d}")
     k = parse_kline(data[0])
@@ -186,13 +249,13 @@ def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
         diffs = kline_diffs(k, archived["kline"])
         validation.update({
             "archive_cross_check": "match" if not diffs else f"mismatch: {diffs}",
-            "archive_url": archived["url"],
-            "archive_sha256_verified": archived["sha256"],
+            "archive_provenance": archived["provenance"],
         })
         if diffs:
             issues.append(f"spot {symbol} {d}: API vs official archive mismatch {diffs}")
     return {
         "symbol": symbol, "market": "spot", "source": f"{base}/api/v3/klines",
+        "provenance": api_provenance(f"{base}/api/v3/klines", params, request_url, retrieved_at, SPOT_KLINES_DOCS),
         "daily_kline": k, "validation": validation,
     }, issues
 
@@ -210,6 +273,7 @@ def collect_futures(base_asset: str, quotes: list[str], d: date) -> tuple[list[d
         issues += [f"futures {symbol} {d}: {i}" for i in check_kline(k, d)]
         out.append({
             "symbol": symbol, "market": "usdm_perpetual", "source": archived["url"],
+            "provenance": archived["provenance"],
             "daily_kline": k, "validation": {"archive_sha256_verified": archived["sha256"]},
         })
     return out, issues
@@ -234,12 +298,19 @@ def run(now: datetime, trade_date: date, out_root: Path, config: dict) -> tuple[
     run_dir.mkdir(parents=True, exist_ok=True)
     fetched_at = now.isoformat().replace("+00:00", "Z")
 
-    spot_syms, spot_base = discover_spot_symbols(tokens, quotes)
+    spot_syms, discovery = discover_spot_symbols(tokens, quotes)
     summary: dict = {
         "fetched_at_utc": fetched_at,
         "trade_date_utc": trade_date.isoformat(),
-        "spot_source": spot_base,
+        "spot_source": discovery["endpoint"].removesuffix("/api/v3/exchangeInfo"),
         "futures_source": ARCHIVE_BASE,
+        "spot_symbol_discovery": discovery,
+        "futures_symbol_discovery": {
+            "type": "official_archive_file",
+            "rule": f"symbol = base_asset + quote for quote in {quotes}; listed if "
+                    f"{ARCHIVE_BASE}/{ARCHIVE_PREFIX['futures']}/daily/klines/<SYMBOL>/1d/<SYMBOL>-1d-<trade_date>.zip exists",
+            "docs": ARCHIVE_DOCS,
+        },
         "tokens": {},
         "issues": [],
         "errors": [],

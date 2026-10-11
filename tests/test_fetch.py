@@ -31,6 +31,13 @@ class FetchTests(unittest.TestCase):
         other[4] = "84.21"
         self.assertEqual(fetch.kline_diffs(fetch.parse_kline(ROW), fetch.parse_kline(other)), ["close"])
 
+    def test_api_provenance_field_map_matches_parse_order(self):
+        prov = fetch.api_provenance("e", {}, "u", "t", "d")
+        k = fetch.parse_kline(ROW)
+        for field, path in prov["field_map"].items():
+            idx = int(path.removeprefix("$[0][").removesuffix("]"))
+            self.assertEqual(str(ROW[idx]), str(k[field]))
+
     def test_utc_day_start(self):
         self.assertEqual(fetch.utc_day_start_ms(date(2026, 10, 9)), ROW[0])
 
