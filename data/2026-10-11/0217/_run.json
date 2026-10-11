@@ -1,0 +1,49 @@
+{
+  "fetched_at_utc": "2026-10-11T02:17:37Z",
+  "trade_date_utc": "2026-10-10",
+  "spot_source": "https://data-api.binance.vision",
+  "futures_source": "https://data.binance.vision",
+  "tokens": {
+    "MARSCOIN": {
+      "status": "ok",
+      "spot_symbols": [
+        "MARSCOINUSDT",
+        "MARSCOINUSDC"
+      ],
+      "futures_symbols": []
+    },
+    "NIULAI": {
+      "status": "ok",
+      "spot_symbols": [
+        "牛来USDT",
+        "牛来USDC"
+      ],
+      "futures_symbols": []
+    },
+    "HYPE": {
+      "status": "ok",
+      "spot_symbols": [
+        "HYPEUSDC",
+        "HYPEUSDT"
+      ],
+      "futures_symbols": []
+    },
+    "POINS": {
+      "status": "not_listed_on_binance",
+      "spot_symbols": [],
+      "futures_symbols": []
+    }
+  },
+  "issues": [
+    "spot MARSCOINUSDT 2026-10-10: official archive not published yet, cross-check skipped",
+    "spot MARSCOINUSDC 2026-10-10: official archive not published yet, cross-check skipped",
+    "futures MARSCOINUSDT 2026-10-10: official archive not published yet",
+    "spot 牛来USDT 2026-10-10: official archive not published yet, cross-check skipped",
+    "spot 牛来USDC 2026-10-10: official archive not published yet, cross-check skipped",
+    "futures 牛来USDT 2026-10-10: official archive not published yet",
+    "spot HYPEUSDC 2026-10-10: official archive not published yet, cross-check skipped",
+    "spot HYPEUSDT 2026-10-10: official archive not published yet, cross-check skipped",
+    "futures HYPEUSDT 2026-10-10: official archive not published yet"
+  ],
+  "errors": []
+}
