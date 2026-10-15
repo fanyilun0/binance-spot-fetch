@@ -9,7 +9,7 @@ every Spot pair and USD-M perpetual. Sources are official Binance endpoints only
 
 Every archive file is verified against its published SHA256 .CHECKSUM.
 
-Output layout: data/<fetch UTC date>/<fetch UTC HHMM>/<TOKEN>.json plus _run.json.
+Output layout: data/<UTC trade date>/<TOKEN>.json plus _run.json, and data/latest.json index.
 """
 
 from __future__ import annotations
@@ -34,6 +34,9 @@ SPOT_BASES = ["https://data-api.binance.vision", "https://api.binance.com"]
 ARCHIVE_BASE = "https://data.binance.vision"
 ARCHIVE_PREFIX = {"spot": "data/spot", "futures": "data/futures/um"}
 FUTURES_SPOT_MAX_DIFF = 0.05
+# Observed publish delay of data.binance.vision daily files after UTC close: spot ~2-4h, futures ~8-15h.
+ARCHIVE_GRACE = timedelta(hours=36)
+LOOKBACK_DAYS = 3
 SPOT_KLINES_DOCS = "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data"
 SPOT_EXCHANGE_INFO_DOCS = "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#exchange-information"
 ARCHIVE_DOCS = "https://github.com/binance/binance-public-data"
@@ -232,7 +235,7 @@ def discover_spot_symbols(tokens: list[dict], quotes: list[str]) -> tuple[dict, 
     return found, discovery
 
 
-def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
+def collect_spot(symbol: str, d: date, grace_over: bool) -> tuple[dict, list[str], list[str]]:
     params = {"symbol": symbol, "interval": "1d", "startTime": utc_day_start_ms(d), "limit": 1}
     retrieved_at = now_iso()
     data, base, request_url = get_json(SPOT_BASES, "/api/v3/klines", params)
@@ -242,9 +245,11 @@ def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
     issues = [f"spot {symbol} {d}: {i}" for i in check_kline(k, d)]
     archived = archive_daily_kline("spot", symbol, d)
     validation: dict = {}
+    pending: list[str] = []
     if archived is None:
-        validation["archive_cross_check"] = "archive not published"
-        issues.append(f"spot {symbol} {d}: official archive not published yet, cross-check skipped")
+        validation["archive_cross_check"] = "pending: official archive not published yet"
+        msg = f"spot {symbol} {d}: official archive not published yet, cross-check pending"
+        (issues if grace_over else pending).append(msg)
     else:
         diffs = kline_diffs(k, archived["kline"])
         validation.update({
@@ -257,17 +262,20 @@ def collect_spot(symbol: str, d: date) -> tuple[dict, list[str]]:
         "symbol": symbol, "market": "spot", "source": f"{base}/api/v3/klines",
         "provenance": api_provenance(f"{base}/api/v3/klines", params, request_url, retrieved_at, SPOT_KLINES_DOCS),
         "daily_kline": k, "validation": validation,
-    }, issues
+    }, issues, pending
 
 
-def collect_futures(base_asset: str, quotes: list[str], d: date) -> tuple[list[dict], list[str]]:
-    out, issues = [], []
+def collect_futures(base_asset: str, quotes: list[str], d: date, grace_over: bool) -> tuple[list[dict], list[str], list[str]]:
+    out: list[dict] = []
+    issues: list[str] = []
+    pending: list[str] = []
     for symbol in (base_asset + q for q in quotes):
         archived = archive_daily_kline("futures", symbol, d)
         if archived is None:
             # Listed symbol whose file for `d` is missing but the day before exists -> not published yet.
             if archive_daily_kline("futures", symbol, d - timedelta(days=1)) is not None:
-                issues.append(f"futures {symbol} {d}: official archive not published yet")
+                msg = f"futures {symbol} {d}: official archive not published yet"
+                (issues if grace_over else pending).append(msg)
             continue
         k = archived["kline"]
         issues += [f"futures {symbol} {d}: {i}" for i in check_kline(k, d)]
@@ -276,7 +284,7 @@ def collect_futures(base_asset: str, quotes: list[str], d: date) -> tuple[list[d
             "provenance": archived["provenance"],
             "daily_kline": k, "validation": {"archive_sha256_verified": archived["sha256"]},
         })
-    return out, issues
+    return out, issues, pending
 
 
 def cross_market_check(record: dict) -> list[str]:
@@ -292,16 +300,23 @@ def cross_market_check(record: dict) -> list[str]:
     return issues
 
 
-def run(now: datetime, trade_date: date, out_root: Path, config: dict) -> tuple[dict, int]:
-    tokens, quotes = config["tokens"], config["quote_assets"]
-    run_dir = out_root / now.date().isoformat() / now.strftime("%H%M")
-    run_dir.mkdir(parents=True, exist_ok=True)
-    fetched_at = now.isoformat().replace("+00:00", "Z")
+def load_json(path: Path) -> dict | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
 
-    spot_syms, discovery = discover_spot_symbols(tokens, quotes)
+
+def collect_date(now: datetime, trade_date: date, config: dict, spot_syms: dict, discovery: dict) -> tuple[dict, dict]:
+    """Collect one UTC trade date. Returns (summary, {token_name: record})."""
+    tokens, quotes = config["tokens"], config["quote_assets"]
+    fetched_at = now.isoformat().replace("+00:00", "Z")
+    day_end = datetime(trade_date.year, trade_date.month, trade_date.day, tzinfo=timezone.utc) + timedelta(days=1)
+    grace_over = now >= day_end + ARCHIVE_GRACE
     summary: dict = {
-        "fetched_at_utc": fetched_at,
         "trade_date_utc": trade_date.isoformat(),
+        "fetched_at_utc": fetched_at,
+        "status": "complete",
         "spot_source": discovery["endpoint"].removesuffix("/api/v3/exchangeInfo"),
         "futures_source": ARCHIVE_BASE,
         "spot_symbol_discovery": discovery,
@@ -312,57 +327,116 @@ def run(now: datetime, trade_date: date, out_root: Path, config: dict) -> tuple[
             "docs": ARCHIVE_DOCS,
         },
         "tokens": {},
+        "pending": [],
         "issues": [],
         "errors": [],
     }
-
+    records = {}
     for t in tokens:
         name = t["name"]
         record: dict = {
             "token": name, "base_asset": t["base_asset"], "trade_date_utc": trade_date.isoformat(),
             "fetched_at_utc": fetched_at, "spot": [], "futures": [],
         }
+        pending: list[str] = []
         for symbol in spot_syms.get(name, []):
             try:
-                data, issues = collect_spot(symbol, trade_date)
+                data, issues, pend = collect_spot(symbol, trade_date, grace_over)
                 record["spot"].append(data)
                 summary["issues"] += issues
+                pending += pend
             except (HttpError, ValidationError) as e:
                 summary["errors"].append(f"spot {symbol}: {e}")
         try:
-            futures, issues = collect_futures(t["base_asset"], quotes, trade_date)
+            futures, issues, pend = collect_futures(t["base_asset"], quotes, trade_date, grace_over)
             record["futures"] = futures
             summary["issues"] += issues
+            pending += pend
         except (HttpError, ValidationError) as e:
             summary["errors"].append(f"futures {t['base_asset']}: {e}")
         summary["issues"] += cross_market_check(record)
 
-        record["status"] = "ok" if record["spot"] or record["futures"] else "not_listed_on_binance"
-        (run_dir / f"{name}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if not (record["spot"] or record["futures"] or pending):
+            record["status"] = "not_listed_on_binance"
+        else:
+            record["status"] = "partial" if pending else "complete"
+        record["pending"] = pending
+        summary["pending"] += pending
+        records[name] = record
         summary["tokens"][name] = {
             "status": record["status"],
             "spot_symbols": [s["symbol"] for s in record["spot"]],
             "futures_symbols": [f["symbol"] for f in record["futures"]],
         }
+    if summary["pending"]:
+        summary["status"] = "partial"
+    return summary, records
 
-    (run_dir / "_run.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    ok = any(v["status"] == "ok" for v in summary["tokens"].values())
-    return summary, 0 if ok and not summary["errors"] and not summary["issues"] else 1
+
+def write_latest_index(out_root: Path, now: datetime) -> None:
+    dates = {}
+    for run_file in sorted(out_root.glob("*/_run.json"), reverse=True):
+        r = load_json(run_file)
+        if r and "trade_date_utc" in r:
+            dates[r["trade_date_utc"]] = {
+                "status": r.get("status"), "fetched_at_utc": r.get("fetched_at_utc"),
+                "path": f"data/{r['trade_date_utc']}/", "tokens": {n: v["status"] for n, v in r["tokens"].items()},
+            }
+    complete = [d for d, v in dates.items() if v["status"] == "complete"]
+    index = {
+        "updated_at_utc": now.isoformat().replace("+00:00", "Z"),
+        "latest_trade_date_utc": max(dates, default=None),
+        "latest_complete_trade_date_utc": max(complete, default=None),
+        "file_pattern": "data/<trade_date_utc>/<TOKEN>.json",
+        "dates": dict(sorted(dates.items(), reverse=True)),
+    }
+    (out_root / "latest.json").write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def run(now: datetime, trade_dates: list[date], out_root: Path, config: dict, force: bool = False) -> tuple[list[dict], int]:
+    """Collect each trade date into data/<trade_date>/; skip dates already complete unless forced.
+
+    A partial date (official archive not published yet) is re-collected on later runs until complete.
+    """
+    out_root.mkdir(parents=True, exist_ok=True)
+    spot_syms, discovery = discover_spot_symbols(config["tokens"], config["quote_assets"])
+    summaries, failed = [], False
+    for d in trade_dates:
+        day_dir = out_root / d.isoformat()
+        prev = load_json(day_dir / "_run.json")
+        if prev and prev.get("status") == "complete" and not force:
+            summaries.append({"trade_date_utc": d.isoformat(), "status": "complete", "skipped": True})
+            continue
+        summary, records = collect_date(now, d, config, spot_syms, discovery)
+        failed |= bool(summary["issues"] or summary["errors"])
+        unchanged = prev and prev.get("status") == summary["status"] and prev.get("tokens") == summary["tokens"] \
+            and prev.get("issues") == summary["issues"] and prev.get("errors") == summary["errors"]
+        if not unchanged or force:
+            day_dir.mkdir(parents=True, exist_ok=True)
+            for name, record in records.items():
+                (day_dir / f"{name}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            (day_dir / "_run.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        summaries.append(summary)
+    write_latest_index(out_root, now)
+    return summaries, 1 if failed else 0
 
 
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", default=str(ROOT / "data"), help="output root directory")
     p.add_argument("--config", default=str(ROOT / "config.json"))
-    p.add_argument("--date", type=date.fromisoformat, help="UTC trade date YYYY-MM-DD (default: previous UTC day)")
+    p.add_argument("--date", type=date.fromisoformat, action="append",
+                   help=f"UTC trade date YYYY-MM-DD, repeatable (default: last {LOOKBACK_DAYS} completed UTC days)")
+    p.add_argument("--force", action="store_true", help="re-collect dates that are already complete")
     args = p.parse_args()
     config = json.loads(Path(args.config).read_text(encoding="utf-8"))
     now = datetime.now(timezone.utc).replace(microsecond=0)
-    trade_date = args.date or (now.date() - timedelta(days=1))
-    if trade_date >= now.date():
+    today = now.date()
+    trade_dates = sorted(set(args.date or [today - timedelta(days=i) for i in range(1, LOOKBACK_DAYS + 1)]))
+    if any(d >= today for d in trade_dates):
         p.error("--date must be a completed UTC day (before today)")
-    summary, code = run(now, trade_date, Path(args.out), config)
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    summaries, code = run(now, trade_dates, Path(args.out), config, force=args.force)
+    print(json.dumps(summaries, ensure_ascii=False, indent=2))
     return code
 
 

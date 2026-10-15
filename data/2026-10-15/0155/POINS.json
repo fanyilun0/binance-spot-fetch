@@ -1,9 +1,0 @@
-{
-  "token": "POINS",
-  "base_asset": "POINS",
-  "trade_date_utc": "2026-10-14",
-  "fetched_at_utc": "2026-10-15T01:55:04Z",
-  "spot": [],
-  "futures": [],
-  "status": "not_listed_on_binance"
-}
