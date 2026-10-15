@@ -38,6 +38,17 @@ class FetchTests(unittest.TestCase):
             idx = int(path.removeprefix("$[0][").removesuffix("]"))
             self.assertEqual(str(ROW[idx]), str(k[field]))
 
+    def test_unpublished_archive_is_pending_within_grace(self):
+        orig = fetch.archive_daily_kline
+        fetch.archive_daily_kline = lambda market, symbol, d: None if d == date(2026, 10, 9) else {"kline": {}}
+        try:
+            out, issues, pending = fetch.collect_futures("HYPE", ["USDT"], date(2026, 10, 9), grace_over=False)
+            self.assertEqual((out, issues, len(pending)), ([], [], 1))
+            out, issues, pending = fetch.collect_futures("HYPE", ["USDT"], date(2026, 10, 9), grace_over=True)
+            self.assertEqual((len(issues), pending), (1, []))
+        finally:
+            fetch.archive_daily_kline = orig
+
     def test_utc_day_start(self):
         self.assertEqual(fetch.utc_day_start_ms(date(2026, 10, 9)), ROW[0])
 

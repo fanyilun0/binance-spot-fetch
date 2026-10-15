@@ -17,15 +17,28 @@ Pairs are discovered from `exchangeInfo` at every run, so a token that gets list
 
 ## Schedule
 
-`.github/workflows/daily-fetch.yml` runs at **23:55 UTC** daily (GitHub may start scheduled jobs late), on manual dispatch, and as a dry run (no commit, result uploaded as an artifact) on pull requests.
+`.github/workflows/daily-fetch.yml` runs at **00:07, 00:37, 04:17, 10:17, 16:17 UTC** (08:07, 08:37, 12:17, 18:17, 00:17 Beijing), on manual dispatch, and as a dry run (no commit, result uploaded as an artifact) on pull requests.
+
+Timing (UTC trade day D closes at 00:00 UTC on D+1 = 08:00 Beijing):
+
+| Data for day D | Available from (observed) | Committed by slot |
+|---|---|---|
+| Spot daily kline via `data-api.binance.vision` | 00:00 UTC D+1 | 00:07 / 00:37 |
+| Spot official archive (cross-check) | ~02:00-04:00 UTC D+1 | 04:17 |
+| USD-M futures official archive | ~08:00-15:00 UTC D+1 | 10:17 / 16:17 |
+
+- Each run collects the last 3 completed UTC days. Dates already `complete` are skipped; `partial` dates are re-collected and overwritten until complete.
+- A not-yet-published archive is recorded under `pending` (status `partial`), not as a failure. It becomes an issue (red run) only if still missing 36h after the day closed.
+- GitHub may start scheduled runs late (observed 2-4h for the old 23:55 UTC slot), so the times above are earliest, not guaranteed. Check `fetched_at_utc` and `status`.
 
 Each run collects the **finalized 1d kline of the previous UTC day** (`trade_date_utc`). Candles are selected by exchange UTC day boundaries, so the result does not depend on when the job actually starts. Fields: open / high / low / close, `volume` (base asset), `quote_volume` (turnover in quote asset), `trades`, taker buy volume / quote volume.
 
 ## Output layout
 
 ```
-data/<fetch UTC date>/<fetch UTC HHMM>/<TOKEN>.json   # spot + futures daily kline for one token
-data/<fetch UTC date>/<fetch UTC HHMM>/_run.json      # run summary, validation issues, errors
+data/<UTC trade date>/<TOKEN>.json   # spot + futures daily kline for one token; status complete|partial|not_listed_on_binance
+data/<UTC trade date>/_run.json      # summary: status, fetched_at_utc, pending, issues, errors
+data/latest.json                     # index: latest_trade_date_utc, latest_complete_trade_date_utc, per-date status
 ```
 
 ## Data sources (official Binance only)
@@ -58,14 +71,14 @@ Every spot / futures entry has a `provenance` object; `_run.json` has `spot_symb
 Example check of a spot close price:
 
 ```
-jq -r '.spot[0].provenance.verify' data/<date>/<HHMM>/HYPE.json | sh   # then compare $[0][4] with .spot[0].daily_kline.close
+jq -r '.spot[0].provenance.verify' data/<date>/HYPE.json | sh   # then compare $[0][4] with .spot[0].daily_kline.close
 ```
 
 ## Run locally
 
 ```
 python3 fetch.py            # writes to ./data
-python3 fetch.py --date 2026-10-01   # backfill a specific UTC trade date
+python3 fetch.py --date 2026-10-01 --date 2026-10-02   # backfill specific UTC trade dates (--force re-collects complete ones)
 python3 fetch.py --out /tmp/data
 python3 -m unittest discover -s tests
 ```

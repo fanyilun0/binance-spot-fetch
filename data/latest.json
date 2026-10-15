@@ -1,0 +1,74 @@
+{
+  "updated_at_utc": "2026-10-15T13:21:41Z",
+  "latest_trade_date_utc": "2026-10-14",
+  "latest_complete_trade_date_utc": "2026-10-14",
+  "file_pattern": "data/<trade_date_utc>/<TOKEN>.json",
+  "dates": {
+    "2026-10-14": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-14/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    },
+    "2026-10-13": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-13/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    },
+    "2026-10-12": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-12/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    },
+    "2026-10-11": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-11/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    },
+    "2026-10-10": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-10/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    },
+    "2026-10-09": {
+      "status": "complete",
+      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "path": "data/2026-10-09/",
+      "tokens": {
+        "MARSCOIN": "complete",
+        "NIULAI": "complete",
+        "HYPE": "complete",
+        "POINS": "not_listed_on_binance"
+      }
+    }
+  }
+}
