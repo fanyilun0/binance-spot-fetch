@@ -1,0 +1,116 @@
+{
+  "token": "HYPE",
+  "base_asset": "HYPE",
+  "trade_date_utc": "2026-10-14",
+  "fetched_at_utc": "2026-10-15T01:55:04Z",
+  "spot": [
+    {
+      "symbol": "HYPEUSDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDC",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:12Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "81.51000000",
+        "high": "82.71000000",
+        "low": "79.10000000",
+        "close": "80.82000000",
+        "volume": "66560.64800000",
+        "close_time": 1792022399999,
+        "quote_volume": "5398080.47514000",
+        "trades": 10791,
+        "taker_buy_volume": "38913.93000000",
+        "taker_buy_quote_volume": "3158030.56099000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDT",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:13Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "81.58000000",
+        "high": "82.79000000",
+        "low": "79.16000000",
+        "close": "80.88000000",
+        "volume": "367596.32200000",
+        "close_time": 1792022399999,
+        "quote_volume": "29747821.66112000",
+        "trades": 79348,
+        "taker_buy_volume": "191854.96900000",
+        "taker_buy_quote_volume": "15527946.78274000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    }
+  ],
+  "futures": [],
+  "status": "ok"
+}

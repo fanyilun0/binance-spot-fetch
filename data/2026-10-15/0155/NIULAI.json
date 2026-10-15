@@ -1,0 +1,116 @@
+{
+  "token": "NIULAI",
+  "base_asset": "牛来",
+  "trade_date_utc": "2026-10-14",
+  "fetched_at_utc": "2026-10-15T01:55:04Z",
+  "spot": [
+    {
+      "symbol": "牛来USDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "牛来USDT",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDT&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:09Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDT&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "0.07464000",
+        "high": "0.08300000",
+        "low": "0.06812000",
+        "close": "0.06966000",
+        "volume": "150304797.00000000",
+        "close_time": 1792022399999,
+        "quote_volume": "11341097.87986000",
+        "trades": 135174,
+        "taker_buy_volume": "68762460.00000000",
+        "taker_buy_quote_volume": "5237037.27927000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    },
+    {
+      "symbol": "牛来USDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "牛来USDC",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDC&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:10Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDC&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "0.07520000",
+        "high": "0.08294000",
+        "low": "0.06816000",
+        "close": "0.06935000",
+        "volume": "5422469.00000000",
+        "close_time": 1792022399999,
+        "quote_volume": "416441.82168000",
+        "trades": 2797,
+        "taker_buy_volume": "2270350.00000000",
+        "taker_buy_quote_volume": "177423.44932000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    }
+  ],
+  "futures": [],
+  "status": "ok"
+}

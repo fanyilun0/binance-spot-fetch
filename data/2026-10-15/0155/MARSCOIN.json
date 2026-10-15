@@ -1,0 +1,116 @@
+{
+  "token": "MARSCOIN",
+  "base_asset": "MARSCOIN",
+  "trade_date_utc": "2026-10-14",
+  "fetched_at_utc": "2026-10-15T01:55:04Z",
+  "spot": [
+    {
+      "symbol": "MARSCOINUSDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "MARSCOINUSDT",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDT&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:06Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDT&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "0.07940000",
+        "high": "0.08710000",
+        "low": "0.07610000",
+        "close": "0.08250000",
+        "volume": "91490893.60000000",
+        "close_time": 1792022399999,
+        "quote_volume": "7471925.28185000",
+        "trades": 44198,
+        "taker_buy_volume": "45173530.40000000",
+        "taker_buy_quote_volume": "3692930.51333000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    },
+    {
+      "symbol": "MARSCOINUSDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "MARSCOINUSDC",
+          "interval": "1d",
+          "startTime": 1791936000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDC&interval=1d&startTime=1791936000000&limit=1",
+        "retrieved_at_utc": "2026-10-15T01:55:07Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDC&interval=1d&startTime=1791936000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1791936000000,
+        "open": "0.07970000",
+        "high": "0.08670000",
+        "low": "0.07640000",
+        "close": "0.08250000",
+        "volume": "3666043.00000000",
+        "close_time": 1792022399999,
+        "quote_volume": "299375.59019000",
+        "trades": 948,
+        "taker_buy_volume": "1849701.40000000",
+        "taker_buy_quote_volume": "150416.27218000",
+        "open_time_utc": "2026-10-14T00:00:00Z",
+        "close_time_utc": "2026-10-14T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "archive not published"
+      }
+    }
+  ],
+  "futures": [],
+  "status": "ok"
+}
