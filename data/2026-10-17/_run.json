@@ -1,0 +1,64 @@
+{
+  "trade_date_utc": "2026-10-17",
+  "fetched_at_utc": "2026-10-18T04:22:35Z",
+  "status": "partial",
+  "spot_source": "https://data-api.binance.vision",
+  "futures_source": "https://data.binance.vision",
+  "spot_symbol_discovery": {
+    "type": "rest_api",
+    "provider": "Binance",
+    "method": "GET",
+    "endpoint": "https://data-api.binance.vision/api/v3/exchangeInfo",
+    "params": {
+      "permissions": "SPOT"
+    },
+    "request_url": "https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT",
+    "retrieved_at_utc": "2026-10-18T04:22:35Z",
+    "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#exchange-information",
+    "selection": "$.symbols[?(@.baseAsset in config.tokens[].base_asset && @.quoteAsset in ['USDT', 'USDC'] && @.status == 'TRADING')]",
+    "verify": "curl -s 'https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT'"
+  },
+  "futures_symbol_discovery": {
+    "type": "official_archive_file",
+    "rule": "symbol = base_asset + quote for quote in ['USDT', 'USDC']; listed if https://data.binance.vision/data/futures/um/daily/klines/<SYMBOL>/1d/<SYMBOL>-1d-<trade_date>.zip exists",
+    "docs": "https://github.com/binance/binance-public-data"
+  },
+  "tokens": {
+    "MARSCOIN": {
+      "status": "partial",
+      "spot_symbols": [
+        "MARSCOINUSDT",
+        "MARSCOINUSDC"
+      ],
+      "futures_symbols": []
+    },
+    "NIULAI": {
+      "status": "partial",
+      "spot_symbols": [
+        "牛来USDT",
+        "牛来USDC"
+      ],
+      "futures_symbols": []
+    },
+    "HYPE": {
+      "status": "partial",
+      "spot_symbols": [
+        "HYPEUSDC",
+        "HYPEUSDT"
+      ],
+      "futures_symbols": []
+    },
+    "POINS": {
+      "status": "not_listed_on_binance",
+      "spot_symbols": [],
+      "futures_symbols": []
+    }
+  },
+  "pending": [
+    "futures MARSCOINUSDT 2026-10-17: official archive not published yet",
+    "futures 牛来USDT 2026-10-17: official archive not published yet",
+    "futures HYPEUSDT 2026-10-17: official archive not published yet"
+  ],
+  "issues": [],
+  "errors": []
+}
