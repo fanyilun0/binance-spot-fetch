@@ -1,6 +1,6 @@
 {
   "trade_date_utc": "2026-10-15",
-  "fetched_at_utc": "2026-10-16T09:01:31Z",
+  "fetched_at_utc": "2026-10-19T01:50:46Z",
   "status": "complete",
   "spot_source": "https://data-api.binance.vision",
   "futures_source": "https://data.binance.vision",
@@ -13,7 +13,7 @@
       "permissions": "SPOT"
     },
     "request_url": "https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT",
-    "retrieved_at_utc": "2026-10-16T09:01:31Z",
+    "retrieved_at_utc": "2026-10-19T01:50:46Z",
     "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#exchange-information",
     "selection": "$.symbols[?(@.baseAsset in config.tokens[].base_asset && @.quoteAsset in ['USDT', 'USDC'] && @.status == 'TRADING')]",
     "verify": "curl -s 'https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT'"
@@ -54,10 +54,12 @@
         "HYPEUSDT"
       ]
     },
-    "POINS": {
-      "status": "not_listed_on_binance",
+    "PONS": {
+      "status": "complete",
       "spot_symbols": [],
-      "futures_symbols": []
+      "futures_symbols": [
+        "PONSUSDT"
+      ]
     }
   },
   "pending": [],

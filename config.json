@@ -3,7 +3,7 @@
     {"name": "MARSCOIN", "base_asset": "MARSCOIN"},
     {"name": "NIULAI", "base_asset": "牛来"},
     {"name": "HYPE", "base_asset": "HYPE"},
-    {"name": "POINS", "base_asset": "POINS"}
+    {"name": "PONS", "base_asset": "PONS"}
   ],
   "quote_assets": ["USDT", "USDC"]
 }

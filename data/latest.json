@@ -1,106 +1,106 @@
 {
-  "updated_at_utc": "2026-10-18T18:39:07Z",
+  "updated_at_utc": "2026-10-19T01:50:46Z",
   "latest_trade_date_utc": "2026-10-17",
   "latest_complete_trade_date_utc": "2026-10-17",
   "file_pattern": "data/<trade_date_utc>/<TOKEN>.json",
   "dates": {
     "2026-10-17": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-18T08:51:07Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-17/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-16": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-17T08:33:53Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-16/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-15": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-16T09:01:31Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-15/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-14": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-14/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-13": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-13/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-12": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-12/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-11": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-11/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-10": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-10/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     },
     "2026-10-09": {
       "status": "complete",
-      "fetched_at_utc": "2026-10-15T13:20:41Z",
+      "fetched_at_utc": "2026-10-19T01:50:46Z",
       "path": "data/2026-10-09/",
       "tokens": {
         "MARSCOIN": "complete",
         "NIULAI": "complete",
         "HYPE": "complete",
-        "POINS": "not_listed_on_binance"
+        "PONS": "complete"
       }
     }
   }
