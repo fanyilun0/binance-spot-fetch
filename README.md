@@ -11,7 +11,7 @@ Configured in `config.json` (`base_asset` is the Binance asset code, `name` is t
 | MARSCOIN | `MARSCOIN` | MARSCOINUSDT, MARSCOINUSDC | MARSCOINUSDT |
 | NIULAI | `牛来` | 牛来USDT, 牛来USDC | 牛来USDT |
 | HYPE | `HYPE` | HYPEUSDT, HYPEUSDC | HYPEUSDT |
-| POINS | `POINS` | not listed | not listed |
+| PONS | `PONS` | not listed | `PONSUSDT` (archive since 2026-09-06) |
 
 Pairs are discovered from `exchangeInfo` at every run, so a token that gets listed later is picked up automatically.
 

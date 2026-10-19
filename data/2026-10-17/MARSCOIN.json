@@ -2,7 +2,7 @@
   "token": "MARSCOIN",
   "base_asset": "MARSCOIN",
   "trade_date_utc": "2026-10-17",
-  "fetched_at_utc": "2026-10-18T08:51:07Z",
+  "fetched_at_utc": "2026-10-19T01:50:46Z",
   "spot": [
     {
       "symbol": "MARSCOINUSDT",
@@ -20,7 +20,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDT&interval=1d&startTime=1792195200000&limit=1",
-        "retrieved_at_utc": "2026-10-18T08:51:09Z",
+        "retrieved_at_utc": "2026-10-19T01:52:12Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -79,7 +79,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-10-18T08:51:10Z",
+          "retrieved_at_utc": "2026-10-19T01:52:13Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -101,7 +101,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDC&interval=1d&startTime=1792195200000&limit=1",
-        "retrieved_at_utc": "2026-10-18T08:51:10Z",
+        "retrieved_at_utc": "2026-10-19T01:52:13Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -160,7 +160,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-10-18T08:51:11Z",
+          "retrieved_at_utc": "2026-10-19T01:52:13Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -196,7 +196,7 @@
           "taker_buy_quote_volume": "column 11"
         },
         "timestamp_unit": "milliseconds",
-        "retrieved_at_utc": "2026-10-18T08:51:12Z",
+        "retrieved_at_utc": "2026-10-19T01:52:14Z",
         "docs": "https://github.com/binance/binance-public-data",
         "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
       },
