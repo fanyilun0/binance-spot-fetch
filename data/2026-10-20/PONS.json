@@ -1,0 +1,12 @@
+{
+  "token": "PONS",
+  "base_asset": "PONS",
+  "trade_date_utc": "2026-10-20",
+  "fetched_at_utc": "2026-10-21T04:36:05Z",
+  "spot": [],
+  "futures": [],
+  "status": "partial",
+  "pending": [
+    "futures PONSUSDT 2026-10-20: official archive not published yet"
+  ]
+}
