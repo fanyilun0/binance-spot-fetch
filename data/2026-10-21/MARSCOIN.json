@@ -1,0 +1,175 @@
+{
+  "token": "MARSCOIN",
+  "base_asset": "MARSCOIN",
+  "trade_date_utc": "2026-10-21",
+  "fetched_at_utc": "2026-10-22T04:34:55Z",
+  "spot": [
+    {
+      "symbol": "MARSCOINUSDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "MARSCOINUSDT",
+          "interval": "1d",
+          "startTime": 1792540800000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDT&interval=1d&startTime=1792540800000&limit=1",
+        "retrieved_at_utc": "2026-10-22T04:34:58Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDT&interval=1d&startTime=1792540800000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1792540800000,
+        "open": "0.07930000",
+        "high": "0.08440000",
+        "low": "0.07900000",
+        "close": "0.08110000",
+        "volume": "54721549.60000000",
+        "close_time": 1792627199999,
+        "quote_volume": "4444596.27719000",
+        "trades": 28017,
+        "taker_buy_volume": "26508007.30000000",
+        "taker_buy_quote_volume": "2154281.17929000",
+        "open_time_utc": "2026-10-21T00:00:00Z",
+        "close_time_utc": "2026-10-21T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_provenance": {
+          "type": "official_archive_file",
+          "provider": "Binance (data.binance.vision)",
+          "url": "https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-21.zip",
+          "checksum_url": "https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-21.zip.CHECKSUM",
+          "sha256": "2c130579d148b17c0fd4a44f38d99b97a3776b6292d2f7efc35fe85d00fee6d5",
+          "sha256_verified": true,
+          "file_in_zip": "MARSCOINUSDT-1d-2026-10-21.csv",
+          "csv_header": false,
+          "csv_line": 1,
+          "field_map": {
+            "open_time": "column 1",
+            "open": "column 2",
+            "high": "column 3",
+            "low": "column 4",
+            "close": "column 5",
+            "volume": "column 6",
+            "close_time": "column 7",
+            "quote_volume": "column 8",
+            "trades": "column 9",
+            "taker_buy_volume": "column 10",
+            "taker_buy_quote_volume": "column 11"
+          },
+          "timestamp_unit": "microseconds",
+          "retrieved_at_utc": "2026-10-22T04:34:58Z",
+          "docs": "https://github.com/binance/binance-public-data",
+          "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-21.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDT/1d/MARSCOINUSDT-1d-2026-10-21.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
+        }
+      }
+    },
+    {
+      "symbol": "MARSCOINUSDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "MARSCOINUSDC",
+          "interval": "1d",
+          "startTime": 1792540800000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDC&interval=1d&startTime=1792540800000&limit=1",
+        "retrieved_at_utc": "2026-10-22T04:34:59Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=MARSCOINUSDC&interval=1d&startTime=1792540800000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1792540800000,
+        "open": "0.07990000",
+        "high": "0.08420000",
+        "low": "0.07910000",
+        "close": "0.08120000",
+        "volume": "2818511.60000000",
+        "close_time": 1792627199999,
+        "quote_volume": "229231.56923000",
+        "trades": 846,
+        "taker_buy_volume": "1191001.30000000",
+        "taker_buy_quote_volume": "96863.90456000",
+        "open_time_utc": "2026-10-21T00:00:00Z",
+        "close_time_utc": "2026-10-21T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_provenance": {
+          "type": "official_archive_file",
+          "provider": "Binance (data.binance.vision)",
+          "url": "https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-21.zip",
+          "checksum_url": "https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-21.zip.CHECKSUM",
+          "sha256": "5b6ea6f96f54c95f675c7dc15637f98a872fb6602920628266606162d81a25bb",
+          "sha256_verified": true,
+          "file_in_zip": "MARSCOINUSDC-1d-2026-10-21.csv",
+          "csv_header": false,
+          "csv_line": 1,
+          "field_map": {
+            "open_time": "column 1",
+            "open": "column 2",
+            "high": "column 3",
+            "low": "column 4",
+            "close": "column 5",
+            "volume": "column 6",
+            "close_time": "column 7",
+            "quote_volume": "column 8",
+            "trades": "column 9",
+            "taker_buy_volume": "column 10",
+            "taker_buy_quote_volume": "column 11"
+          },
+          "timestamp_unit": "microseconds",
+          "retrieved_at_utc": "2026-10-22T04:35:00Z",
+          "docs": "https://github.com/binance/binance-public-data",
+          "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-21.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/MARSCOINUSDC/1d/MARSCOINUSDC-1d-2026-10-21.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
+        }
+      }
+    }
+  ],
+  "futures": [],
+  "status": "partial",
+  "pending": [
+    "futures MARSCOINUSDT 2026-10-21: official archive not published yet"
+  ]
+}
