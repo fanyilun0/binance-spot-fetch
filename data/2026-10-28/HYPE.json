@@ -2,7 +2,7 @@
   "token": "HYPE",
   "base_asset": "HYPE",
   "trade_date_utc": "2026-10-28",
-  "fetched_at_utc": "2026-10-29T05:39:31Z",
+  "fetched_at_utc": "2026-10-30T16:43:33Z",
   "spot": [
     {
       "symbol": "HYPEUSDC",
@@ -20,7 +20,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1793145600000&limit=1",
-        "retrieved_at_utc": "2026-10-29T05:39:40Z",
+        "retrieved_at_utc": "2026-10-30T16:43:39Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -79,7 +79,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-10-29T05:39:41Z",
+          "retrieved_at_utc": "2026-10-30T16:43:40Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-10-28.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-10-28.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -101,7 +101,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1793145600000&limit=1",
-        "retrieved_at_utc": "2026-10-29T05:39:41Z",
+        "retrieved_at_utc": "2026-10-30T16:43:40Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -160,7 +160,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-10-29T05:39:42Z",
+          "retrieved_at_utc": "2026-10-30T16:43:41Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-10-28.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-10-28.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -168,8 +168,6 @@
     }
   ],
   "futures": [],
-  "status": "partial",
-  "pending": [
-    "futures HYPEUSDT 2026-10-28: official archive not published yet"
-  ]
+  "status": "complete",
+  "pending": []
 }
