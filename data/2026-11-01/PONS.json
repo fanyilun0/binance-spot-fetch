@@ -2,11 +2,61 @@
   "token": "PONS",
   "base_asset": "PONS",
   "trade_date_utc": "2026-11-01",
-  "fetched_at_utc": "2026-11-02T05:54:03Z",
+  "fetched_at_utc": "2026-11-02T12:24:29Z",
   "spot": [],
-  "futures": [],
-  "status": "partial",
-  "pending": [
-    "futures PONSUSDT 2026-11-01: official archive not published yet"
-  ]
+  "futures": [
+    {
+      "symbol": "PONSUSDT",
+      "market": "usdm_perpetual",
+      "source": "https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-01.zip",
+      "provenance": {
+        "type": "official_archive_file",
+        "provider": "Binance (data.binance.vision)",
+        "url": "https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-01.zip",
+        "checksum_url": "https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-01.zip.CHECKSUM",
+        "sha256": "9330e31239aafdbfee9786e94964aacda981d8f4ab99c836ae16ef32ded89998",
+        "sha256_verified": true,
+        "file_in_zip": "PONSUSDT-1d-2026-11-01.csv",
+        "csv_header": true,
+        "csv_line": 2,
+        "field_map": {
+          "open_time": "column 1",
+          "open": "column 2",
+          "high": "column 3",
+          "low": "column 4",
+          "close": "column 5",
+          "volume": "column 6",
+          "close_time": "column 7",
+          "quote_volume": "column 8",
+          "trades": "column 9",
+          "taker_buy_volume": "column 10",
+          "taker_buy_quote_volume": "column 11"
+        },
+        "timestamp_unit": "milliseconds",
+        "retrieved_at_utc": "2026-11-02T12:24:43Z",
+        "docs": "https://github.com/binance/binance-public-data",
+        "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-01.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-01.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
+      },
+      "daily_kline": {
+        "open_time": 1793491200000,
+        "open": "0.2322000",
+        "high": "0.2484000",
+        "low": "0.2308000",
+        "close": "0.2393000",
+        "volume": "76933786",
+        "close_time": 1793577599999,
+        "quote_volume": "18499961.3550000",
+        "trades": 207938,
+        "taker_buy_volume": "36066086",
+        "taker_buy_quote_volume": "8675675.1205000",
+        "open_time_utc": "2026-11-01T00:00:00Z",
+        "close_time_utc": "2026-11-01T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_sha256_verified": "9330e31239aafdbfee9786e94964aacda981d8f4ab99c836ae16ef32ded89998"
+      }
+    }
+  ],
+  "status": "complete",
+  "pending": []
 }
