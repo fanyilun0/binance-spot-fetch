@@ -1,9 +1,20 @@
 {
-  "updated_at_utc": "2026-11-01T20:30:43Z",
-  "latest_trade_date_utc": "2026-10-31",
+  "updated_at_utc": "2026-11-02T05:54:03Z",
+  "latest_trade_date_utc": "2026-11-01",
   "latest_complete_trade_date_utc": "2026-10-31",
   "file_pattern": "data/<trade_date_utc>/<TOKEN>.json",
   "dates": {
+    "2026-11-01": {
+      "status": "partial",
+      "fetched_at_utc": "2026-11-02T05:54:03Z",
+      "path": "data/2026-11-01/",
+      "tokens": {
+        "MARSCOIN": "partial",
+        "NIULAI": "partial",
+        "HYPE": "partial",
+        "PONS": "partial"
+      }
+    },
     "2026-10-31": {
       "status": "complete",
       "fetched_at_utc": "2026-11-01T11:16:00Z",
