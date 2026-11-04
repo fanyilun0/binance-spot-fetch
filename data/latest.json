@@ -1,5 +1,5 @@
 {
-  "updated_at_utc": "2026-11-04T06:06:23Z",
+  "updated_at_utc": "2026-11-04T06:56:34Z",
   "latest_trade_date_utc": "2026-11-03",
   "latest_complete_trade_date_utc": "2026-11-02",
   "file_pattern": "data/<trade_date_utc>/<TOKEN>.json",
