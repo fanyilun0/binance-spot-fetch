@@ -2,7 +2,7 @@
   "token": "PONS",
   "base_asset": "PONS",
   "trade_date_utc": "2026-11-05",
-  "fetched_at_utc": "2026-11-06T07:18:39Z",
+  "fetched_at_utc": "2026-11-06T12:06:34Z",
   "spot": [],
   "futures": [
     {
@@ -33,7 +33,7 @@
           "taker_buy_quote_volume": "column 11"
         },
         "timestamp_unit": "milliseconds",
-        "retrieved_at_utc": "2026-11-06T07:18:51Z",
+        "retrieved_at_utc": "2026-11-06T12:06:46Z",
         "docs": "https://github.com/binance/binance-public-data",
         "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-05.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/PONSUSDT/1d/PONSUSDT-1d-2026-11-05.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
       },
