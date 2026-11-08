@@ -2,7 +2,7 @@
   "token": "NIULAI",
   "base_asset": "牛来",
   "trade_date_utc": "2026-11-07",
-  "fetched_at_utc": "2026-11-08T05:53:29Z",
+  "fetched_at_utc": "2026-11-08T11:16:12Z",
   "spot": [
     {
       "symbol": "牛来USDT",
@@ -20,7 +20,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDT&interval=1d&startTime=1794009600000&limit=1",
-        "retrieved_at_utc": "2026-11-08T05:53:36Z",
+        "retrieved_at_utc": "2026-11-08T11:16:18Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -79,7 +79,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-11-08T05:53:36Z",
+          "retrieved_at_utc": "2026-11-08T11:16:19Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -101,7 +101,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=%E7%89%9B%E6%9D%A5USDC&interval=1d&startTime=1794009600000&limit=1",
-        "retrieved_at_utc": "2026-11-08T05:53:37Z",
+        "retrieved_at_utc": "2026-11-08T11:16:19Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -160,16 +160,67 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-11-08T05:53:37Z",
+          "retrieved_at_utc": "2026-11-08T11:16:20Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDC/1d/%E7%89%9B%E6%9D%A5USDC-1d-2026-11-07.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/%E7%89%9B%E6%9D%A5USDC/1d/%E7%89%9B%E6%9D%A5USDC-1d-2026-11-07.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
       }
     }
   ],
-  "futures": [],
-  "status": "partial",
-  "pending": [
-    "futures 牛来USDT 2026-11-07: official archive not published yet"
-  ]
+  "futures": [
+    {
+      "symbol": "牛来USDT",
+      "market": "usdm_perpetual",
+      "source": "https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip",
+      "provenance": {
+        "type": "official_archive_file",
+        "provider": "Binance (data.binance.vision)",
+        "url": "https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip",
+        "checksum_url": "https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip.CHECKSUM",
+        "sha256": "270780965dc333f8093d39a12247d314fd8d039d4d88de67128ece5858053f85",
+        "sha256_verified": true,
+        "file_in_zip": "牛来USDT-1d-2026-11-07.csv",
+        "csv_header": true,
+        "csv_line": 2,
+        "field_map": {
+          "open_time": "column 1",
+          "open": "column 2",
+          "high": "column 3",
+          "low": "column 4",
+          "close": "column 5",
+          "volume": "column 6",
+          "close_time": "column 7",
+          "quote_volume": "column 8",
+          "trades": "column 9",
+          "taker_buy_volume": "column 10",
+          "taker_buy_quote_volume": "column 11"
+        },
+        "timestamp_unit": "milliseconds",
+        "retrieved_at_utc": "2026-11-08T11:16:20Z",
+        "docs": "https://github.com/binance/binance-public-data",
+        "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/%E7%89%9B%E6%9D%A5USDT/1d/%E7%89%9B%E6%9D%A5USDT-1d-2026-11-07.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
+      },
+      "daily_kline": {
+        "open_time": 1794009600000,
+        "open": "0.0548900",
+        "high": "0.0606900",
+        "low": "0.0533300",
+        "close": "0.0592500",
+        "volume": "190638473",
+        "close_time": 1794095999999,
+        "quote_volume": "10869534.1229600",
+        "trades": 189997,
+        "taker_buy_volume": "94273986",
+        "taker_buy_quote_volume": "5382917.1746900",
+        "open_time_utc": "2026-11-07T00:00:00Z",
+        "close_time_utc": "2026-11-07T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_sha256_verified": "270780965dc333f8093d39a12247d314fd8d039d4d88de67128ece5858053f85",
+        "spot_close_diff_pct": 0.0675
+      }
+    }
+  ],
+  "status": "complete",
+  "pending": []
 }
