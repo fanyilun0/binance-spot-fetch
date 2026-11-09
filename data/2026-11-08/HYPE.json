@@ -1,0 +1,175 @@
+{
+  "token": "HYPE",
+  "base_asset": "HYPE",
+  "trade_date_utc": "2026-11-08",
+  "fetched_at_utc": "2026-11-09T06:12:26Z",
+  "spot": [
+    {
+      "symbol": "HYPEUSDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDC",
+          "interval": "1d",
+          "startTime": 1794096000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1794096000000&limit=1",
+        "retrieved_at_utc": "2026-11-09T06:12:35Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1794096000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1794096000000,
+        "open": "77.73000000",
+        "high": "78.06000000",
+        "low": "73.77000000",
+        "close": "74.53000000",
+        "volume": "29801.53900000",
+        "close_time": 1794182399999,
+        "quote_volume": "2257695.66213000",
+        "trades": 8206,
+        "taker_buy_volume": "14362.32400000",
+        "taker_buy_quote_volume": "1087108.74180000",
+        "open_time_utc": "2026-11-08T00:00:00Z",
+        "close_time_utc": "2026-11-08T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_provenance": {
+          "type": "official_archive_file",
+          "provider": "Binance (data.binance.vision)",
+          "url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-08.zip",
+          "checksum_url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-08.zip.CHECKSUM",
+          "sha256": "1b264a94e3c5f751c3e8b1a6d4ab22de52782d21c7b6f2286ecea63d06e9e143",
+          "sha256_verified": true,
+          "file_in_zip": "HYPEUSDC-1d-2026-11-08.csv",
+          "csv_header": false,
+          "csv_line": 1,
+          "field_map": {
+            "open_time": "column 1",
+            "open": "column 2",
+            "high": "column 3",
+            "low": "column 4",
+            "close": "column 5",
+            "volume": "column 6",
+            "close_time": "column 7",
+            "quote_volume": "column 8",
+            "trades": "column 9",
+            "taker_buy_volume": "column 10",
+            "taker_buy_quote_volume": "column 11"
+          },
+          "timestamp_unit": "microseconds",
+          "retrieved_at_utc": "2026-11-09T06:12:36Z",
+          "docs": "https://github.com/binance/binance-public-data",
+          "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-08.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-08.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
+        }
+      }
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDT",
+          "interval": "1d",
+          "startTime": 1794096000000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794096000000&limit=1",
+        "retrieved_at_utc": "2026-11-09T06:12:36Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794096000000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1794096000000,
+        "open": "77.82000000",
+        "high": "78.16000000",
+        "low": "73.78000000",
+        "close": "74.56000000",
+        "volume": "377344.93100000",
+        "close_time": 1794182399999,
+        "quote_volume": "28757490.20377000",
+        "trades": 144318,
+        "taker_buy_volume": "191264.34000000",
+        "taker_buy_quote_volume": "14606760.19134000",
+        "open_time_utc": "2026-11-08T00:00:00Z",
+        "close_time_utc": "2026-11-08T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "match",
+        "archive_provenance": {
+          "type": "official_archive_file",
+          "provider": "Binance (data.binance.vision)",
+          "url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-08.zip",
+          "checksum_url": "https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-08.zip.CHECKSUM",
+          "sha256": "1fb6101db3b499fdbd39cf75a45861c7b9686a22b4fbb89ef64fe43f6fb23203",
+          "sha256_verified": true,
+          "file_in_zip": "HYPEUSDT-1d-2026-11-08.csv",
+          "csv_header": false,
+          "csv_line": 1,
+          "field_map": {
+            "open_time": "column 1",
+            "open": "column 2",
+            "high": "column 3",
+            "low": "column 4",
+            "close": "column 5",
+            "volume": "column 6",
+            "close_time": "column 7",
+            "quote_volume": "column 8",
+            "trades": "column 9",
+            "taker_buy_volume": "column 10",
+            "taker_buy_quote_volume": "column 11"
+          },
+          "timestamp_unit": "microseconds",
+          "retrieved_at_utc": "2026-11-09T06:12:37Z",
+          "docs": "https://github.com/binance/binance-public-data",
+          "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-08.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-08.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
+        }
+      }
+    }
+  ],
+  "futures": [],
+  "status": "partial",
+  "pending": [
+    "futures HYPEUSDT 2026-11-08: official archive not published yet"
+  ]
+}
