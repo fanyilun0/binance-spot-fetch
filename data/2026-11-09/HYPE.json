@@ -1,0 +1,121 @@
+{
+  "token": "HYPE",
+  "base_asset": "HYPE",
+  "trade_date_utc": "2026-11-09",
+  "fetched_at_utc": "2026-11-10T00:15:40Z",
+  "spot": [
+    {
+      "symbol": "HYPEUSDC",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDC",
+          "interval": "1d",
+          "startTime": 1794182400000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1794182400000&limit=1",
+        "retrieved_at_utc": "2026-11-10T00:15:51Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1794182400000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1794182400000,
+        "open": "74.44000000",
+        "high": "76.68000000",
+        "low": "72.40000000",
+        "close": "75.14000000",
+        "volume": "75327.88000000",
+        "close_time": 1794268799999,
+        "quote_volume": "5613819.77335000",
+        "trades": 14520,
+        "taker_buy_volume": "43611.76500000",
+        "taker_buy_quote_volume": "3251034.19272000",
+        "open_time_utc": "2026-11-09T00:00:00Z",
+        "close_time_utc": "2026-11-09T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "pending: official archive not published yet"
+      }
+    },
+    {
+      "symbol": "HYPEUSDT",
+      "market": "spot",
+      "source": "https://data-api.binance.vision/api/v3/klines",
+      "provenance": {
+        "type": "rest_api",
+        "provider": "Binance",
+        "method": "GET",
+        "endpoint": "https://data-api.binance.vision/api/v3/klines",
+        "params": {
+          "symbol": "HYPEUSDT",
+          "interval": "1d",
+          "startTime": 1794182400000,
+          "limit": 1
+        },
+        "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794182400000&limit=1",
+        "retrieved_at_utc": "2026-11-10T00:15:52Z",
+        "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
+        "response_path": "$[0]",
+        "field_map": {
+          "open_time": "$[0][0]",
+          "open": "$[0][1]",
+          "high": "$[0][2]",
+          "low": "$[0][3]",
+          "close": "$[0][4]",
+          "volume": "$[0][5]",
+          "close_time": "$[0][6]",
+          "quote_volume": "$[0][7]",
+          "trades": "$[0][8]",
+          "taker_buy_volume": "$[0][9]",
+          "taker_buy_quote_volume": "$[0][10]"
+        },
+        "verify": "curl -s 'https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794182400000&limit=1'"
+      },
+      "daily_kline": {
+        "open_time": 1794182400000,
+        "open": "74.56000000",
+        "high": "76.78000000",
+        "low": "72.49000000",
+        "close": "75.19000000",
+        "volume": "506733.98600000",
+        "close_time": 1794268799999,
+        "quote_volume": "37774106.33423000",
+        "trades": 189853,
+        "taker_buy_volume": "274589.92200000",
+        "taker_buy_quote_volume": "20477564.66515000",
+        "open_time_utc": "2026-11-09T00:00:00Z",
+        "close_time_utc": "2026-11-09T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_cross_check": "pending: official archive not published yet"
+      }
+    }
+  ],
+  "futures": [],
+  "status": "partial",
+  "pending": [
+    "spot HYPEUSDC 2026-11-09: official archive not published yet, cross-check pending",
+    "spot HYPEUSDT 2026-11-09: official archive not published yet, cross-check pending",
+    "futures HYPEUSDT 2026-11-09: official archive not published yet"
+  ]
+}
