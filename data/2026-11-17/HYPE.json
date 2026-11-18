@@ -2,7 +2,7 @@
   "token": "HYPE",
   "base_asset": "HYPE",
   "trade_date_utc": "2026-11-17",
-  "fetched_at_utc": "2026-11-18T07:16:05Z",
+  "fetched_at_utc": "2026-11-18T07:53:09Z",
   "spot": [
     {
       "symbol": "HYPEUSDC",
@@ -20,7 +20,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDC&interval=1d&startTime=1794873600000&limit=1",
-        "retrieved_at_utc": "2026-11-18T07:16:14Z",
+        "retrieved_at_utc": "2026-11-18T07:53:18Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -79,7 +79,7 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-11-18T07:16:15Z",
+          "retrieved_at_utc": "2026-11-18T07:53:18Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
@@ -101,7 +101,7 @@
           "limit": 1
         },
         "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=HYPEUSDT&interval=1d&startTime=1794873600000&limit=1",
-        "retrieved_at_utc": "2026-11-18T07:16:15Z",
+        "retrieved_at_utc": "2026-11-18T07:53:19Z",
         "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data",
         "response_path": "$[0]",
         "field_map": {
@@ -160,17 +160,119 @@
             "taker_buy_quote_volume": "column 11"
           },
           "timestamp_unit": "microseconds",
-          "retrieved_at_utc": "2026-11-18T07:16:15Z",
+          "retrieved_at_utc": "2026-11-18T07:53:19Z",
           "docs": "https://github.com/binance/binance-public-data",
           "verify": "curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/spot/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '1p'"
         }
       }
     }
   ],
-  "futures": [],
-  "status": "partial",
-  "pending": [
-    "futures HYPEUSDT 2026-11-17: official archive not published yet",
-    "futures HYPEUSDC 2026-11-17: official archive not published yet"
-  ]
+  "futures": [
+    {
+      "symbol": "HYPEUSDT",
+      "market": "usdm_perpetual",
+      "source": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip",
+      "provenance": {
+        "type": "official_archive_file",
+        "provider": "Binance (data.binance.vision)",
+        "url": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip",
+        "checksum_url": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip.CHECKSUM",
+        "sha256": "215dd0de678a0e4c39b15aa802cd5e8c2ba775379b20602355b2b59c57917371",
+        "sha256_verified": true,
+        "file_in_zip": "HYPEUSDT-1d-2026-11-17.csv",
+        "csv_header": true,
+        "csv_line": 2,
+        "field_map": {
+          "open_time": "column 1",
+          "open": "column 2",
+          "high": "column 3",
+          "low": "column 4",
+          "close": "column 5",
+          "volume": "column 6",
+          "close_time": "column 7",
+          "quote_volume": "column 8",
+          "trades": "column 9",
+          "taker_buy_volume": "column 10",
+          "taker_buy_quote_volume": "column 11"
+        },
+        "timestamp_unit": "milliseconds",
+        "retrieved_at_utc": "2026-11-18T07:53:19Z",
+        "docs": "https://github.com/binance/binance-public-data",
+        "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDT/1d/HYPEUSDT-1d-2026-11-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
+      },
+      "daily_kline": {
+        "open_time": 1794873600000,
+        "open": "69.76400",
+        "high": "70.71400",
+        "low": "67.29400",
+        "close": "70.00400",
+        "volume": "8211769.46",
+        "close_time": 1794959999999,
+        "quote_volume": "566282100.4954200",
+        "trades": 2074362,
+        "taker_buy_volume": "4040143.50",
+        "taker_buy_quote_volume": "278708474.9794800",
+        "open_time_utc": "2026-11-17T00:00:00Z",
+        "close_time_utc": "2026-11-17T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_sha256_verified": "215dd0de678a0e4c39b15aa802cd5e8c2ba775379b20602355b2b59c57917371",
+        "spot_close_diff_pct": 0.0229
+      }
+    },
+    {
+      "symbol": "HYPEUSDC",
+      "market": "usdm_perpetual",
+      "source": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip",
+      "provenance": {
+        "type": "official_archive_file",
+        "provider": "Binance (data.binance.vision)",
+        "url": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip",
+        "checksum_url": "https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip.CHECKSUM",
+        "sha256": "5b90490e3f39d378b068d221aadb4d05d1e46035a3167367e2f294a7f730dc3d",
+        "sha256_verified": true,
+        "file_in_zip": "HYPEUSDC-1d-2026-11-17.csv",
+        "csv_header": true,
+        "csv_line": 2,
+        "field_map": {
+          "open_time": "column 1",
+          "open": "column 2",
+          "high": "column 3",
+          "low": "column 4",
+          "close": "column 5",
+          "volume": "column 6",
+          "close_time": "column 7",
+          "quote_volume": "column 8",
+          "trades": "column 9",
+          "taker_buy_volume": "column 10",
+          "taker_buy_quote_volume": "column 11"
+        },
+        "timestamp_unit": "milliseconds",
+        "retrieved_at_utc": "2026-11-18T07:53:20Z",
+        "docs": "https://github.com/binance/binance-public-data",
+        "verify": "curl -s 'https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip' -o kline.zip && curl -s 'https://data.binance.vision/data/futures/um/daily/klines/HYPEUSDC/1d/HYPEUSDC-1d-2026-11-17.zip.CHECKSUM'; echo; sha256sum kline.zip && unzip -p kline.zip | sed -n '2p'"
+      },
+      "daily_kline": {
+        "open_time": 1794873600000,
+        "open": "69.75500",
+        "high": "70.62700",
+        "low": "67.22000",
+        "close": "69.91800",
+        "volume": "224956.50",
+        "close_time": 1794959999999,
+        "quote_volume": "15555513.5737100",
+        "trades": 20392,
+        "taker_buy_volume": "112933.30",
+        "taker_buy_quote_volume": "7812799.2892500",
+        "open_time_utc": "2026-11-17T00:00:00Z",
+        "close_time_utc": "2026-11-17T23:59:59.999000Z"
+      },
+      "validation": {
+        "archive_sha256_verified": "5b90490e3f39d378b068d221aadb4d05d1e46035a3167367e2f294a7f730dc3d",
+        "spot_close_diff_pct": 0.1029
+      }
+    }
+  ],
+  "status": "complete",
+  "pending": []
 }
