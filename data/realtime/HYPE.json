@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "token": "HYPE",
+  "source_policy": "exchange_official_only",
+  "capture_started_at_utc": "2026-11-23T17:29:09Z",
+  "capture_completed_at_utc": "2026-11-23T17:29:13Z",
+  "status": "partial",
+  "successful_markets": 3,
+  "markets": {
+    "binance_spot_hypeusdt": {
+      "status": "ok",
+      "exchange": "Binance",
+      "market": "spot",
+      "symbol": "HYPEUSDT",
+      "base": "HYPE",
+      "quote": "USDT",
+      "price": "65.83000000",
+      "price_type": "last",
+      "observed_at_utc": "2026-11-23T17:29:10Z",
+      "request_latency_ms": 645,
+      "source_url": "https://data-api.binance.vision/api/v3/ticker/price?symbol=HYPEUSDT",
+      "change_pct_24h": "4.442",
+      "stats_observed_at_utc": "2026-11-23T17:29:10Z",
+      "stats_source_url": "https://data-api.binance.vision/api/v3/ticker/24hr?symbol=HYPEUSDT"
+    },
+    "binance_perp_hypeusdt": {
+      "status": "error",
+      "exchange": "Binance",
+      "market": "usdm_perpetual",
+      "symbol": "HYPEUSDT",
+      "price": null,
+      "error": "RuntimeError: https://fapi.binance.com: HTTPError: HTTP Error 451: ; https://fapi1.binance.com: JSONDecodeError: Expecting value: line 1 column 1 (char 0); https://fapi2.binance.com: JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+    },
+    "hyperliquid_spot_hypeusdc": {
+      "status": "ok",
+      "exchange": "Hyperliquid",
+      "market": "spot",
+      "symbol": "@107",
+      "base": "HYPE",
+      "quote": "USDC",
+      "price": "0.067595",
+      "price_type": "mid",
+      "observed_at_utc": "2026-11-23T17:29:12Z",
+      "request_latency_ms": 220,
+      "source_url": "https://api.hyperliquid.xyz/info",
+      "request_body": {
+        "type": "spotMetaAndAssetCtxs"
+      },
+      "prev_day_price": "0.066869"
+    },
+    "hyperliquid_perp_hype": {
+      "status": "ok",
+      "exchange": "Hyperliquid",
+      "market": "perpetual",
+      "symbol": "HYPE",
+      "base": "HYPE",
+      "quote": "USDC",
+      "price": "65.7625",
+      "price_type": "mid",
+      "observed_at_utc": "2026-11-23T17:29:13Z",
+      "request_latency_ms": 473,
+      "source_url": "https://api.hyperliquid.xyz/info",
+      "request_body": {
+        "type": "metaAndAssetCtxs"
+      },
+      "markPx": "65.737",
+      "funding": "0.0000125",
+      "openInterest": "17915454.6600000039",
+      "prevDayPx": "62.882",
+      "funding_rate": "0.0000125",
+      "funding_interval": "hourly"
+    }
+  }
+}
