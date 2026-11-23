@@ -1,15 +1,10 @@
 name: Daily Binance fetch
 
 on:
-  # UTC. Daily candles close at 00:00 UTC (08:00 Beijing). Each run collects the last 3 completed UTC days
-  # and re-collects dates still "partial" (official archive not yet published: spot ~02-04 UTC, futures ~08-15 UTC).
-  # GitHub may start scheduled runs late, so several slots are used; off-the-hour minutes reduce queueing.
+  # Six evenly spaced runs/day, UTC; 08:55 / 12:55 / 16:55 / 20:55 / 00:55 / 04:55 Beijing.
+  # GitHub scheduled workflow may be delayed; JSON timestamps are authoritative.
   schedule:
-    - cron: "7 0 * * *"    # 08:07 Beijing - spot API daily kline of the just-closed day
-    - cron: "37 0 * * *"   # 08:37 Beijing - retry if the first slot was delayed
-    - cron: "17 4 * * *"   # 12:17 Beijing - spot archive cross-check
-    - cron: "17 10 * * *"  # 18:17 Beijing - futures archive
-    - cron: "17 16 * * *"  # 00:17 Beijing - futures archive (late publish)
+    - cron: "55 */4 * * *"
   workflow_dispatch:
   pull_request:
 
@@ -30,6 +25,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Capture official HYPE spot and perpetual quotes
+        run: python hype_quote.py --out data/realtime/HYPE.json
 
       - name: Unit tests
         run: python -m unittest discover -s tests -v
