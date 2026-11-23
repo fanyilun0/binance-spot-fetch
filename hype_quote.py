@@ -109,28 +109,45 @@ def binance_perp() -> dict:
 
 
 def hyperliquid_spot() -> dict:
+    """Resolve by token.index AND assetCtx.coin, never by list offset.
+
+    Metadata token indices are identifiers rather than positions. The spot
+    contexts may not have the same positional ordering as the universe.
+    """
     try:
         response, elapsed, observed_at = request_json(HL_INFO, {"type": "spotMetaAndAssetCtxs"})
         if not isinstance(response, list) or len(response) != 2:
             raise ValueError("unexpected spotMetaAndAssetCtxs response")
         meta, contexts = response
-        tokens = meta["tokens"]
-        for idx, asset in enumerate(meta["universe"]):
-            names = [tokens[token_id]["name"] for token_id in asset["tokens"]]
-            if names == ["HYPE", "USDC"]:
-                ctx = contexts[idx]
+        tokens_by_index = {int(t["index"]): t for t in meta["tokens"]}
+        contexts_by_coin = {c["coin"]: c for c in contexts if c.get("coin")}
+        expected_token_id = "0x0d01dc56dcaaca66ad901c959b4011ec"
+        for asset in meta["universe"]:
+            if len(asset.get("tokens", [])) != 2:
+                continue
+            base_token = tokens_by_index.get(int(asset["tokens"][0]), {})
+            quote_token = tokens_by_index.get(int(asset["tokens"][1]), {})
+            if (base_token.get("name") == "HYPE"
+                    and base_token.get("tokenId", "").lower() == expected_token_id
+                    and quote_token.get("name") == "USDC"):
+                coin = asset["name"]
+                ctx = contexts_by_coin.get(coin)
+                if ctx is None:
+                    raise ValueError(f"HYPE/USDC context for {coin} absent or missing coin identification")
                 price = ctx.get("midPx") or ctx.get("markPx")
                 if not price or float(price) <= 0:
                     raise ValueError("HYPE/USDC spot midpoint unavailable")
                 row = {"status": "ok", "exchange": "Hyperliquid", "market": "spot",
-                       "symbol": asset["name"], "base": "HYPE", "quote": "USDC",
+                       "symbol": coin, "base": "HYPE", "quote": "USDC",
                        "price": str(price), "price_type": "mid" if ctx.get("midPx") else "mark",
                        "observed_at_utc": observed_at, "request_latency_ms": elapsed,
+                       "token_index": int(base_token["index"]),
+                       "token_id": base_token["tokenId"], "asset_index": int(asset["index"]),
                        "source_url": HL_INFO, "request_body": {"type": "spotMetaAndAssetCtxs"}}
                 if ctx.get("prevDayPx"):
                     row["prev_day_price"] = str(ctx["prevDayPx"])
                 return row
-        raise ValueError("HYPE/USDC spot not found in official metadata")
+        raise ValueError("native HYPE/USDC pair not found in official metadata")
     except Exception as exc:
         return err_record("Hyperliquid", "spot", "HYPE/USDC", exc)
 
@@ -172,8 +189,21 @@ def capture() -> dict:
         "hyperliquid_spot_hypeusdc": hyperliquid_spot(),
         "hyperliquid_perp_hype": hyperliquid_perp(),
     }
+    # Fail closed if the spot asset is wrongly mapped or repriced by an
+    # inconsistent denomination. Do not publish an evidently false quote.
+    hl_spot = markets["hyperliquid_spot_hypeusdc"]
+    refs = [markets["binance_spot_hypeusdt"], markets["hyperliquid_perp_hype"]]
+    if hl_spot["status"] == "ok":
+        for ref in refs:
+            if ref["status"] == "ok" and abs(float(hl_spot["price"]) / float(ref["price"]) - 1) > 0.10:
+                bad_price = hl_spot.pop("price")
+                hl_spot["status"] = "error"
+                hl_spot["error"] = ("HYPE spot price validation failed: "
+                                    f"{bad_price} versus {ref['exchange']} {ref['market']} "
+                                    f"{ref['price']} (difference over 10%)")
+                break
     ok = sum(item["status"] == "ok" for item in markets.values())
-    return {"version": 1, "token": "HYPE", "source_policy": "exchange_official_only",
+    return {"version": 2, "token": "HYPE", "source_policy": "exchange_official_only",
             "capture_started_at_utc": start, "capture_completed_at_utc": now_utc(),
             "status": "complete" if ok == 4 else "partial" if ok else "unavailable",
             "successful_markets": ok, "markets": markets}
