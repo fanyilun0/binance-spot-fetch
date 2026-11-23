@@ -5,6 +5,13 @@ on:
   # GitHub scheduled workflow may be delayed; JSON timestamps are authoritative.
   schedule:
     - cron: "55 */4 * * *"
+  # Run a CI check automatically whenever this workflow definition changes.
+  # Data-only commits do not match this path, preventing recursive runs.
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/daily-fetch.yml"
   workflow_dispatch:
   pull_request:
 
