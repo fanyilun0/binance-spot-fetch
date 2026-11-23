@@ -12,6 +12,7 @@ on:
       - main
     paths:
       - ".github/workflows/daily-fetch.yml"
+      - "hype_quote.py"
   workflow_dispatch:
   pull_request:
 
