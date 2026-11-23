@@ -1,6 +1,6 @@
 {
   "trade_date_utc": "2026-11-22",
-  "fetched_at_utc": "2026-11-23T07:25:43Z",
+  "fetched_at_utc": "2026-11-23T08:06:04Z",
   "status": "partial",
   "spot_source": "https://data-api.binance.vision",
   "futures_source": "https://data.binance.vision",
@@ -13,7 +13,7 @@
       "permissions": "SPOT"
     },
     "request_url": "https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT",
-    "retrieved_at_utc": "2026-11-23T07:25:43Z",
+    "retrieved_at_utc": "2026-11-23T08:06:04Z",
     "docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#exchange-information",
     "selection": "$.symbols[?(@.baseAsset in config.tokens[].base_asset && @.quoteAsset in ['USDT', 'USDC'] && @.status == 'TRADING')]",
     "verify": "curl -s 'https://data-api.binance.vision/api/v3/exchangeInfo?permissions=SPOT'"
@@ -25,12 +25,14 @@
   },
   "tokens": {
     "MARSCOIN": {
-      "status": "partial",
+      "status": "complete",
       "spot_symbols": [
         "MARSCOINUSDT",
         "MARSCOINUSDC"
       ],
-      "futures_symbols": []
+      "futures_symbols": [
+        "MARSCOINUSDT"
+      ]
     },
     "NIULAI": {
       "status": "partial",
@@ -41,12 +43,15 @@
       "futures_symbols": []
     },
     "HYPE": {
-      "status": "partial",
+      "status": "complete",
       "spot_symbols": [
         "HYPEUSDC",
         "HYPEUSDT"
       ],
-      "futures_symbols": []
+      "futures_symbols": [
+        "HYPEUSDT",
+        "HYPEUSDC"
+      ]
     },
     "PONS": {
       "status": "partial",
@@ -55,10 +60,7 @@
     }
   },
   "pending": [
-    "futures MARSCOINUSDT 2026-11-22: official archive not published yet",
     "futures 牛来USDT 2026-11-22: official archive not published yet",
-    "futures HYPEUSDT 2026-11-22: official archive not published yet",
-    "futures HYPEUSDC 2026-11-22: official archive not published yet",
     "futures PONSUSDT 2026-11-22: official archive not published yet"
   ],
   "issues": [],
