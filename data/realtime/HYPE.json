@@ -2,8 +2,8 @@
   "version": 2,
   "token": "HYPE",
   "source_policy": "exchange_official_only",
-  "capture_started_at_utc": "2026-11-27T09:10:12Z",
-  "capture_completed_at_utc": "2026-11-27T09:10:15Z",
+  "capture_started_at_utc": "2026-11-27T21:41:54Z",
+  "capture_completed_at_utc": "2026-11-27T21:41:56Z",
   "status": "partial",
   "successful_markets": 3,
   "markets": {
@@ -14,13 +14,13 @@
       "symbol": "HYPEUSDT",
       "base": "HYPE",
       "quote": "USDT",
-      "price": "65.71000000",
+      "price": "64.03000000",
       "price_type": "last",
-      "observed_at_utc": "2026-11-27T09:10:13Z",
-      "request_latency_ms": 715,
+      "observed_at_utc": "2026-11-27T21:41:55Z",
+      "request_latency_ms": 435,
       "source_url": "https://data-api.binance.vision/api/v3/ticker/price?symbol=HYPEUSDT",
-      "change_pct_24h": "7.020",
-      "stats_observed_at_utc": "2026-11-27T09:10:13Z",
+      "change_pct_24h": "1.026",
+      "stats_observed_at_utc": "2026-11-27T21:41:55Z",
       "stats_source_url": "https://data-api.binance.vision/api/v3/ticker/24hr?symbol=HYPEUSDT"
     },
     "binance_perp_hypeusdt": {
@@ -38,10 +38,10 @@
       "symbol": "@107",
       "base": "HYPE",
       "quote": "USDC",
-      "price": "65.6445",
+      "price": "64.006",
       "price_type": "mid",
-      "observed_at_utc": "2026-11-27T09:10:15Z",
-      "request_latency_ms": 359,
+      "observed_at_utc": "2026-11-27T21:41:56Z",
+      "request_latency_ms": 319,
       "token_index": 150,
       "token_id": "0x0d01dc56dcaaca66ad901c959b4011ec",
       "asset_index": 107,
@@ -49,7 +49,7 @@
       "request_body": {
         "type": "spotMetaAndAssetCtxs"
       },
-      "prev_day_price": "61.323"
+      "prev_day_price": "63.311"
     },
     "hyperliquid_perp_hype": {
       "status": "ok",
@@ -58,18 +58,18 @@
       "symbol": "HYPE",
       "base": "HYPE",
       "quote": "USDC",
-      "price": "65.6505",
+      "price": "63.968",
       "price_type": "mid",
-      "observed_at_utc": "2026-11-27T09:10:15Z",
-      "request_latency_ms": 191,
+      "observed_at_utc": "2026-11-27T21:41:56Z",
+      "request_latency_ms": 132,
       "source_url": "https://api.hyperliquid.xyz/info",
       "request_body": {
         "type": "metaAndAssetCtxs"
       },
-      "markPx": "65.651",
+      "markPx": "63.966",
       "funding": "0.0000125",
-      "openInterest": "19794909.0799999982",
-      "prevDayPx": "61.332",
+      "openInterest": "19240519.8600000031",
+      "prevDayPx": "63.321",
       "funding_rate": "0.0000125",
       "funding_interval": "hourly"
     }
